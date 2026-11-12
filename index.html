@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบแจ้งซ่อมแซม ผรก.สวบ.ทอ.</title>
+  
+  <!-- CSS & Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+ /* ==========================================
+   🖨️ CSS ใบพิมพ์ A4
+   ========================================== */
+@media print {
+  html, body { margin: 0 !important; padding: 0 !important; height: 297mm; overflow: hidden; }
+  body * { visibility: hidden !important; }
+  #printableJobCard, #printableJobCard * { visibility: visible !important; }
+  #printableJobCard {
+    display: block !important; position: absolute; left: 0; top: 0; width: 210mm; height: 296mm;
+    margin: 0; padding: 6mm 13mm 0 13mm !important; box-sizing: border-box; overflow: hidden;
+    background: white; color: black; font-family: 'Sarabun', sans-serif !important;
+  }
+  @page { size: A4 portrait; margin: 0; }
+}
+ 
+.job-card-box { width: 184mm; margin: 0; background: #fff; color: #000; font-family: 'Sarabun', sans-serif; font-size: 11.5pt; line-height: 1.25; }
+.jc-head { position: relative; height: 26.3mm; }
+.jc-page-no { position: absolute; top: 0; right: 0; line-height: 5.5mm; font-size: 12pt; font-weight: bold; }
+.jc-title { position: absolute; top: 6mm; left: 0; right: 0; text-align: center; font-weight: bold; }
+.jc-title .t1 { font-size: 15pt; line-height: 6.5mm; }
+.jc-title .t2 { font-size: 13pt; line-height: 5.6mm; margin-top: 1.1mm; }
+.sheet-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 0 0 2.5mm 0; }
+.sheet-table td, .sheet-table th { border: 1px solid #000; padding: 0 1mm; vertical-align: middle; overflow: hidden; word-wrap: break-word; }
+.sheet-table th.hdr { height: 8.1mm; background-color: #d1d5db !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: bold; text-align: left; white-space: nowrap; }
+.sheet-table td.lbl { font-weight: bold; text-align: center; white-space: nowrap; }
+.h-std { height: 7.3mm; } .h-md { height: 10.9mm; } .h-md2 { height: 10.9mm; } .h-lg { height: 18.5mm; }
+.jc-jobno { width: 48.3mm; margin: 0 0 2.5mm auto; border-collapse: collapse; table-layout: fixed; }
+.jc-jobno td { border: 1px solid #000; height: 6.95mm; padding: 0 1mm; font-weight: bold; vertical-align: middle; }
+.jc-jobno td.k { width: 49.5%; text-align: right; white-space: nowrap; } .jc-jobno td.v { text-align: left; }
+.jc-jobno tr:nth-child(2) td.v { font-weight: normal; }
+.mat-table th, .mat-table td { text-align: center; } .mat-table th.hdr { height: 8.4mm; }
+.mat-table .colhead th { height: 5.9mm; font-weight: bold; background: none; text-align: center; padding: 0; }
+.mat-table tbody td { height: 5.75mm; padding: 0; }
+.dots-cell { white-space: nowrap; vertical-align: bottom !important; padding: 0 0 0.3mm 1mm !important; overflow: hidden; }
+.status-list { line-height: 5.1mm; } .sat-row { padding: 0 1mm !important; } .sat-row .opt { margin-left: 5mm; } .sat-row .opt.last { margin-left: 8mm; }
+.sign-row { display: flex; margin-top: 8.5mm; } .sign-row.second { justify-content: center; margin-top: 4mm; }
+.sign-block { width: 50%; text-align: center; line-height: 4.8mm; padding-left: 3.5mm; box-sizing: border-box; } .sign-row.second .sign-block { padding-left: 0; }
+.doc-code { margin: 0.5mm 0 0 136mm; line-height: 6.1mm; text-align: left; }
+
+    :root {
+      --primary-color: #0f172a; --accent-color: #0284c7; --accent-hover: #0369a1;
+      --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #334155; --text-muted: #64748b; --radius-lg: 16px;
+    }
+    body { font-family: 'Sarabun', sans-serif; background-color: var(--bg-color); color: var(--text-main); -webkit-font-smoothing: antialiased; }
+    .navbar-custom { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #e2e8f0; padding: 10px 0; }
+    .brand-title { font-weight: 700; color: var(--primary-color); letter-spacing: -0.3px; }
+    .nav-pills .nav-link { color: var(--text-muted); font-weight: 500; border-radius: 10px; padding: 8px 16px; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+    .nav-pills .nav-link.active { background-color: var(--accent-color); color: #ffffff; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); }
+    .main-card { background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid #f1f5f9; box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05); }
+    .stepper-wrapper { position: relative; display: flex; justify-content: space-between; margin-bottom: 2rem; }
+    .stepper-wrapper::before { content: ''; position: absolute; top: 18px; left: 15%; right: 15%; height: 3px; background-color: #e2e8f0; z-index: 1; }
+    .step-item { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+    .step-counter { width: 40px; height: 40px; border-radius: 50%; background-color: #ffffff; border: 3px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-muted); transition: all 0.3s ease; }
+    .step-item.active .step-counter { border-color: var(--accent-color); background-color: var(--accent-color); color: #ffffff; box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15); }
+    .step-item.completed .step-counter { background-color: #10b981; border-color: #10b981; color: #ffffff; }
+    .step-name { font-size: 0.825rem; font-weight: 600; margin-top: 8px; color: var(--text-muted); }
+    .step-item.active .step-name { color: var(--primary-color); }
+    .form-control, .form-select { border-radius: 10px; border: 1px solid #cbd5e1; padding: 10px 14px; font-size: 0.95rem; }
+    .form-control:focus, .form-select:focus { border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1); }
+    .form-label { font-weight: 600; color: var(--primary-color); font-size: 0.9rem; margin-bottom: 6px; }
+    .badge-status { font-weight: 600; padding: 6px 14px; border-radius: 30px; font-size: 0.8rem; }
+    .status-pending { background-color: #fef3c7; color: #b45309; } .status-progress { background-color: #e0f2fe; color: #0369a1; }
+    .status-done { background-color: #d1fae5; color: #047857; } .status-cancel { background-color: #ffe4e6; color: #be123c; }
+    .btn-accent { background-color: var(--accent-color); color: white; border-radius: 10px; padding: 10px 24px; font-weight: 600; border: none; }
+    .btn-accent:hover { background-color: var(--accent-hover); color: white; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }
+    .btn-light-custom { background-color: #f1f5f9; color: var(--text-main); border-radius: 10px; padding: 10px 20px; font-weight: 600; border: none; }
+    
+    /* Responsive */
+    @media screen and (max-width: 767.98px) {
+      .navbar-custom { position: static; margin-bottom: 1rem !important; }
+      .jobs-table thead { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+      .jobs-table tbody { display: grid; gap: 16px; width: 100%; }
+      .jobs-table tbody tr { display: block; padding: 4px 14px; background: #fff; border: 1px solid #dbe3ed; border-radius: 12px; }
+      .jobs-table tbody td { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; width: 100%; padding: 12px 0 !important; border: 0; border-bottom: 1px solid #f1f5f9; white-space: normal; }
+      .jobs-table td[data-label]::before { content: attr(data-label); font-weight: 600; color: #475569; }
+      .jobs-table tbody td.cell-editor { display: block; }
+      .jobs-table td.cell-editor::before { display: block; margin-bottom: 6px; }
+    }
+    /* Dashboard specific */
+    .metric-card { position: relative; display: flex; flex-direction: column; padding: 20px; min-height: 190px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
+    .metric-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; margin-bottom: 14px; font-size: 1rem; }
+    .bg-gradient-blue { background: #102c48; color: #fff; } .bg-gradient-blue .metric-icon { background: #ffffff14; color: #bae6fd; }
+    .bg-gradient-green .metric-icon { background: #ecfdf5; color: #047857; }
+    .bg-gradient-yellow .metric-icon { background: #fffbeb; color: #a16207; }
+    .bg-gradient-red .metric-icon { background: #fff1f2; color: #be123c; }
+    .metric-label { font-size: 0.875rem; font-weight: 500; margin-bottom: 12px; }
+    .metric-value { font-size: 2.5rem; font-weight: 700; margin-top: auto; }
+    .surface-card { border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px; background: #fff; }
+    .completion-number { font-size: 3rem; font-weight: 700; color: #047857; }
+    .completion-track { height: 8px; background: #eef2f6; border-radius: 20px; overflow: hidden; }
+    .completion-fill { height: 100%; width: 0; border-radius: inherit; background: #059669; transition: width 250ms ease; }
+    .breakdown-labels { display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 8px; }
+    .breakdown-row .progress { height: 6px; background: #f1f5f9; border-radius: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-custom sticky-top mb-4">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <div class="ms-2">
+          <span class="brand-title fs-4 d-block leading-tight">แผนกบริการ</span>
+          <span class="brand-title fs-4 d-block leading-tight">สถาบันเวชศาสตร์การบินกองทัพอากาศ</span>
+          <span class="text-muted brand-subtitle d-block">สายงานช่างโยธา</span>
+        </div>
+      </a>
+
+      <div class="main-navigation mt-2 mt-lg-0">
+        <ul class="nav nav-pills" id="mainTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="form-tab" type="button" role="tab" aria-controls="formTabContent" aria-selected="true" data-bs-toggle="tab" data-bs-target="#formTabContent"><i class="fa-solid fa-pen-to-square me-1"></i> แจ้งซ่อม</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="status-tab" type="button" role="tab" aria-controls="statusTabContent" aria-selected="false" data-bs-toggle="tab" data-bs-target="#statusTabContent" onclick="loadStatusData()"><i class="fa-solid fa-magnifying-glass me-1"></i> ติดตามสถานะ</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="admin-tab" type="button" role="tab" aria-controls="adminTabContent" aria-selected="false" data-bs-toggle="tab" data-bs-target="#adminTabContent"><i class="fa-solid fa-user-shield me-1"></i> เจ้าหน้าที่</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container pb-5">
+    <div class="tab-content" id="mainTabContent">
+
+      <!-- ================= 1. TAB ฟอร์มแจ้งซ่อม (MULTI-STEP WIZARD) ================= -->
+      <div class="tab-pane fade show active" id="formTabContent" role="tabpanel" aria-labelledby="form-tab">
+        <div class="row justify-content-center">
+          <div class="col-lg-7 col-md-9">
+            <div class="main-card p-4 p-md-5">
+              
+              <div class="text-center mb-4">
+                <h4 class="fw-bold text-slate-800 mb-1">แจ้งความต้องการซ่อมแซม</h4>
+                <p class="form-intro text-muted">กรอกข้อมูลผู้แจ้ง สถานที่ และรายละเอียดงานซ่อม</p>
+              </div>
+              
+              <!-- Progress Stepper -->
+              <div class="stepper-wrapper">
+                <div class="step-item active" id="stepIndicator1">
+                  <div class="step-counter">1</div>
+                  <div class="step-name">ผู้แจ้ง</div>
+                </div>
+                <div class="step-item" id="stepIndicator2">
+                  <div class="step-counter">2</div>
+                  <div class="step-name">สถานที่/กอง/แผนก</div>
+                </div>
+                <div class="step-item" id="stepIndicator3">
+                  <div class="step-counter">3</div>
+                  <div class="step-name">รายละเอียด</div>
+                </div>
+              </div>
+
+              <form id="repairForm">
+                <!-- STEP 1 -->
+                <div id="step1">
+                  <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-user-circle me-2"></i>ข้อมูลผู้แจ้งความต้องการ</h6>
+                  <div class="mb-3">
+                    <label class="form-label" for="reporterName">ชื่อ - สกุล ผู้แจ้ง <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="reporterName" autocomplete="name" required placeholder="เช่น พ.อ.อ.นิติภูมิ สุภศร">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="phone">เบอร์ติดต่อภายใน <span class="text-danger">*</span></label>
+                    <input type="tel" inputmode="tel" autocomplete="tel" class="form-control" id="phone" required placeholder="เช่น 21234">
+                  </div>
+                  <div class="text-end mt-4">
+                    <button type="button" class="btn btn-accent px-4" onclick="nextStep(2)">ถัดไป <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                  </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div id="step2" style="display:none;">
+                  <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-building me-2"></i>เลือกสถานที่</h6>
+                  <div class="mb-3">
+                    <label class="form-label" for="department">กอง / แผนก / อาคารสถานที่ <span class="text-danger">*</span></label>
+                    <select class="form-select" id="department" onchange="onDepartmentChange()" required>
+                      <option value="">-- กรุณาเลือกสถานที่ --</option>
+                      <option value="บก.สวบ.ทอ.">บก.สวบ.ทอ.</option>
+                      <option value="กคผ.สวบ.ทอ.">กคผ.สวบ.ทอ.</option>
+                      <option value="ศลพ.สวบ.ทอ.">ศลพ.สวบ.ทอ.</option>
+                      <option value="กนว.สวบ.ทอ.">กนว.สวบ.ทอ.</option>
+                      <option value="กวก.สวบ.ทอ.">กวก.สวบ.ทอ.</option>
+                      <option value="กพบ.สวบ.ทอ.">กพบ.สวบ.ทอ.</option>
+                      <option value="ทสส.สวบ.ทอ.">ทสส.สวบ.ทอ.</option>
+                      <option value="ผรก.สวบ.ทอ.">ผรก.สวบ.ทอ.</option>
+                      <option value="ห้อง V.I.P.">ห้อง V.I.P.</option>
+                      <option value="ห้อง ธุรการ สวบ.ทอ.">ห้อง ธุรการ สวบ.ทอ.</option>
+                      <option value="ห้อง การเงิน">ห้อง การเงิน</option>
+                      <option value="ห้อง นายทหารงปประมาณ">ห้อง นายทหารงปประมาณ</option>
+                      <option value="ห้อง ส่งกำลังบำรุง">ห้อง ส่งกำลังบำรุง</option>
+                      <option value="ห้อง พัสดุ">ห้อง พัสดุ</option>
+                      <option value="ห้อง จัดหา">ห้อง จัดหา</option>
+                      <option value="ห้อง กำลังพล">ห้อง กำลังพล</option>
+                      <option value="ห้อง ยุทธการและการข่าว">ห้อง ยุทธการและการข่าว</option>
+                      <option value="ห้อง นายทหารพระธรรมนูญ">ห้อง นายทหารพระธรรมนูญ</option>
+                      <option value="ห้อง นายทหารนิรภัยภาคพื้น">ห้อง นายทหารนิรภัยภาคพื้น</option>
+                      <option value="ห้อง สมาคมเวชศาสตร์การบิน">ห้อง สมาคมเวชศาสตร์การบิน</option>
+                      <option value="ห้อง ศูนย์คุณภาพ สวบ.ทอ.">ห้อง ศูนย์คุณภาพ สวบ.ทอ.</option>
+                      <option value="ห้อง ผู้ทรงคุณวุฒิ">ห้อง ผู้ทรงคุณวุฒิ</option>
+                      <option value="ห้องประชุม">ห้องประชุม</option>
+                      <option value="ห้องน้ำ อาคาร 1">ห้องน้ำ อาคาร 1</option>
+                      <option value="ห้องน้ำ อาคาร 2">ห้องน้ำ อาคาร 2</option>
+                      <option value="ห้องน้ำ อาคาร 3">ห้องน้ำ อาคาร 3</option>
+                      <option value="ทางเดิน อาคาร 1">ทางเดิน อาคาร 1</option>
+                      <option value="ทางเดิน อาคาร 2">ทางเดิน อาคาร 2</option>
+                      <option value="ทางเดิน อาคาร 3">ทางเดิน อาคาร 3</option>
+                      <option value="เวร.สวบ.ทอ.">เวร.สวบ.ทอ.</option>
+                      <option value="ห้องอาหาร สวบ.ทอ.">ห้องอาหาร สวบ.ทอ.</option>
+                      <option value="สถานที่อื่นๆ">สถานที่อื่นๆ / ภายนอกอาคาร</option>
+                    </select>
+                  </div>
+                  <div class="mb-3" id="subDeptGroup" style="display:none;">
+                    <label class="form-label" for="subLocation">ห้อง / ตำแหน่ง</label>
+                    <select class="form-select" id="subLocation" onchange="onSubLocationChange()"></select>
+                  </div>
+                  <div class="mb-3" id="customLocationGroup" style="display:none;">
+                    <label class="form-label" for="customLocation">ระบุรายละเอียด / ตำแหน่ง / สถานที่เพิ่มเติม <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="customLocation" placeholder="เช่น ลานจอดรถ, ทางเดินรอบอาคาร ฯลฯ">
+                  </div>
+                  <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-light-custom" onclick="nextStep(1)"><i class="fa-solid fa-arrow-left me-1"></i> ย้อนกลับ</button>
+                    <button type="button" class="btn btn-accent px-4" onclick="nextStep(3)">ถัดไป <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                  </div>
+                </div> 
+
+                <!-- STEP 3 -->
+                <div id="step3" style="display:none;">
+                  <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-screwdriver-wrench me-2"></i>รายละเอียดงานซ่อมแซม</h6>
+                  <div class="mb-3">
+                    <label class="form-label" for="repairType">ประเภทงานซ่อม <span class="text-danger">*</span></label>
+                    <select class="form-select" id="repairType" required>
+                      <option value="งานเครื่องปรับอากาศ">งานเครื่องปรับอากาศ</option>
+                      <option value="งานไฟฟ้า">งานไฟฟ้า / แสงสว่าง</option>
+                      <option value="งานประปา/ห้องน้ำ">งานประปา / สุขาภิบาล</option>
+                      <option value="งานอาคาร/อาคารสถานที่">งานอาคาร / ประตู-หน้าต่าง</option>
+                      <option value="อื่นๆ">อื่นๆ</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="detail">สาเหตุ / อาการชำรุดเบื้องต้น <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="detail" rows="3" required placeholder="ระบุอาการชำรุด เช่น แอร์ไม่เย็น, ไฟฟ้าดับ, น้ำประปารั่ว..."></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="photoInput">แนบรูปถ่ายหน้างาน (ถ้ามี)</label>
+                    <input type="file" class="form-control" id="photoInput" accept="image/*">
+                  </div>
+                  <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-light-custom" onclick="nextStep(2)"><i class="fa-solid fa-arrow-left me-1"></i> ย้อนกลับ</button>
+                    <button type="submit" class="btn btn-success rounded-3 px-4 fw-bold" id="submitBtn"><i class="fa-solid fa-paper-plane me-1"></i> ส่งแจ้งซ่อม</button>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+<!-- ================= 2. TAB ติดตามสถานะ (โชว์เฉพาะเดือนปัจจุบัน ซ่อนผู้แจ้งและเวลา) ================= -->
+<div class="tab-pane fade" id="statusTabContent" role="tabpanel" aria-labelledby="status-tab">
+  <div class="main-card p-4">
+    <div class="row align-items-center mb-4">
+      <div class="col-md-7 mb-2 mb-md-0">
+        <h4 class="fw-bold text-slate-800 mb-0 d-flex align-items-center flex-wrap gap-2">
+          <i class="fa-solid fa-list-check text-primary"></i>
+          <span>รายการติดตามสถานะงานซ่อม</span>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle fs-7 fw-normal" id="currentMonthBadge">กำลังโหลดเดือน...</span>
+        </h4>
+      </div>
+      <div class="col-md-5">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 rounded-start-3"><i class="fa-solid fa-search text-muted"></i></span>
+          <input type="text" class="form-control border-start-0 rounded-end-3" id="searchInput" aria-label="ค้นหารายการแจ้งซ่อม" onkeyup="filterStatusTable()" placeholder="ค้นหาสถานที่, อาการ...">
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive jobs-table-wrapper" tabindex="0">
+      <table role="table" class="table jobs-table table-hover align-middle border-top" id="statusTable">
+        <thead class="table-light">
+          <tr class="text-muted fs-7">
+            <th scope="col" role="columnheader" style="width: 120px;">วันที่</th>
+            <th scope="col" role="columnheader">สถานที่</th>
+            <th scope="col" role="columnheader">ประเภทงาน</th>
+            <th scope="col" role="columnheader">อาการชำรุด</th>
+            <th scope="col" role="columnheader" style="width: 130px;">สถานะ</th>
+            <th scope="col" role="columnheader">หมายเหตุช่าง</th>
+          </tr>
+        </thead>
+        <tbody id="statusTableBody" class="fs-7">
+          <tr><td colspan="6" class="text-center py-5 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>กำลังโหลดข้อมูลสถานะ...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 3. TAB เฉพาะเจ้าหน้าที่ ================= -->
+<div class="tab-pane fade" id="adminTabContent" role="tabpanel" aria-labelledby="admin-tab">
+  
+  <!-- Auth Screen -->
+  <div id="adminAuthCard" class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+      <div class="main-card p-4 text-center">
+        <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex p-3 mb-3">
+          <i class="fa-solid fa-lock fa-2x"></i>
+        </div>
+        <h5 class="fw-bold mb-2">ระบบเจ้าหน้าที่ช่าง</h5>
+        <p class="text-muted fs-7 mb-3">กรอกรหัส PIN เพื่อเข้าสู่ระบบ</p>
+        <input type="password" class="form-control text-center mb-3 fs-5 tracking-widest"
+       id="adminPin" aria-label="รหัส PIN เจ้าหน้าที่" maxlength="6" placeholder="• • • •"
+       onkeydown="if(event.key === 'Enter'){ event.preventDefault(); verifyAdminPin(); }">
+        <button class="btn btn-accent w-100 fw-bold" onclick="verifyAdminPin()">เข้าสู่ระบบ</button>
+        <div id="pinMessage" class="small mt-3 text-danger" role="alert" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard Container -->
+  <div id="adminDashboard" style="display:none;">
+    <div class="main-card p-4">
+      
+      <!-- แถบค้นหาและเลือกเดือน (ใช้ร่วมกันตารางและสถิติ) -->
+      <div class="row align-items-center mb-4 pb-3 border-bottom">
+        <div class="col-md-4 mb-2 mb-md-0">
+          <h4 class="fw-bold text-slate-800 mb-0">
+            <i class="fa-solid fa-sliders text-primary me-2"></i>ระบบจัดการและสถิติ
+            <small class="text-muted fs-7 ms-2 fw-normal" style="font-size: 0.8rem;"><i class="fa-solid fa-bolt text-warning"></i> อัปเดตอัตโนมัติ</small>
+          </h4>
+        </div>
+        <div class="col-md-3 mb-2 mb-md-0">
+          <select class="form-select form-select-sm" id="adminMonthFilter" aria-label="เลือกเดือนที่ต้องการแสดง" onchange="renderAdminTable()">
+            <option value="all">แสดงทุกเดือน (ค้นหาทั้งหมด)</option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-2 mb-md-0">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-search text-muted"></i></span>
+            <input type="text" class="form-control border-start-0" id="adminSearchInput" aria-label="ค้นหารายการ" onkeyup="renderAdminTable()" placeholder="ค้นหาชื่อ, สถานที่, อาการ...">
+          </div>
+        </div>
+        <div class="col-md-2 text-end">
+          <button class="btn btn-outline-danger btn-sm rounded-2 w-100" onclick="location.reload()"><i class="fa-solid fa-sign-out-alt me-1"></i> ออกจากระบบ</button>
+        </div>
+      </div>
+
+      <!-- 🟢 ตารางที่ 1: รายการรอดำเนินการ -->
+      <div class="mb-5 border-bottom pb-4">
+        <h5 class="fw-bold text-slate-800 mb-3 text-warning-emphasis"><i class="fa-solid fa-clock text-warning me-2"></i>รายการซ่อมรอดำเนินการ</h5>
+        <div class="table-responsive jobs-table-wrapper" tabindex="0">
+          <table class="table jobs-table admin-jobs-table table-bordered align-middle fs-7">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">วันเวลา</th><th scope="col">สถานที่</th><th scope="col">อาการชำรุด</th><th scope="col">ผู้แจ้ง/เบอร์โทร</th>
+                <th scope="col" style="width: 150px;">ปรับสถานะ</th><th scope="col" style="width: 220px;">หมายเหตุช่าง/วันที่ซ่อมเสร็จ</th><th scope="col" style="width: 100px;">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="adminPendingTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 🟢 ตารางที่ 2: งานดำเนินการเสร็จสิ้น -->
+      <div class="mb-5 pb-4 border-bottom">
+        <h5 class="fw-bold text-slate-800 mb-3 text-success"><i class="fa-solid fa-circle-check text-success me-2"></i>งานดำเนินการเสร็จสิ้น</h5>
+        <div class="table-responsive jobs-table-wrapper" tabindex="0">
+          <table class="table jobs-table admin-jobs-table table-bordered align-middle fs-7">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">วันเวลา</th><th scope="col">สถานที่</th><th scope="col">อาการชำรุด</th><th scope="col">ผู้แจ้ง/เบอร์โทร</th>
+                <th scope="col" style="width: 150px;">สถานะ</th><th scope="col" style="width: 220px;">หมายเหตุช่าง/วันที่ซ่อมเสร็จ</th><th scope="col" style="width: 100px;">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="adminCompletedTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ================= 📊 สถิติภาพรวม ================= -->
+      <div id="publicDashboard">
+        <div class="d-flex justify-content-between mb-3">
+          <h5 class="fw-bold text-slate-800 m-0"><i class="fa-solid fa-chart-pie text-primary me-2"></i>ภาพรวมสถิติงานซ่อมตามเดือนที่เลือก</h5>
+          <button type="button" class="btn btn-sm btn-light-custom" onclick="loadAdminData()"><i class="fa-solid fa-rotate-right me-1"></i> ดึงข้อมูลล่าสุด</button>
+        </div>
+        <div class="row metrics-grid g-3 mb-4">
+          <div class="col-6 col-md-3"><div class="metric-card bg-gradient-blue"><div class="metric-icon"><i class="fa-solid fa-list-check"></i></div><div class="metric-label">งานทั้งหมด</div><div class="metric-value" id="dashTotalCount">—</div></div></div>
+          <div class="col-6 col-md-3"><div class="metric-card bg-gradient-green"><div class="metric-icon"><i class="fa-solid fa-check"></i></div><div class="metric-label">ซ่อมเสร็จแล้ว</div><div class="metric-value" id="dashDoneCount">—</div></div></div>
+          <div class="col-6 col-md-3"><div class="metric-card bg-gradient-yellow"><div class="metric-icon"><i class="fa-regular fa-clock"></i></div><div class="metric-label">รอ / กำลังทำ</div><div class="metric-value" id="dashPendingCount">—</div></div></div>
+          <div class="col-6 col-md-3"><div class="metric-card bg-gradient-red"><div class="metric-icon"><i class="fa-solid fa-exclamation"></i></div><div class="metric-label">ดำเนินการไม่ได้</div><div class="metric-value" id="dashFailedCount">—</div></div></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-5">
+            <section class="surface-card h-100">
+              <h6 class="fw-bold">ความคืบหน้ารวม</h6>
+              <div class="completion-number mt-2"><span id="completionRate">—</span><small>%</small></div>
+              <p class="text-muted small" id="completionCaption">แสดงผลเมื่อโหลดข้อมูลแล้ว</p>
+              <div class="completion-track mt-3"><div class="completion-fill" id="completionFill"></div></div>
+            </section>
+          </div>
+          <div class="col-md-7">
+            <section class="surface-card h-100">
+              <h6 class="fw-bold mb-3">สัดส่วนตามประเภทงาน</h6>
+              <div class="row align-items-center">
+                <div class="col-5" id="repairChartPanel" hidden>
+                  <canvas id="repairTypeChart"></canvas>
+                </div>
+                <div class="col-7" id="repairTypeBreakdown">
+                  <div id="typeProgressList"></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+ </div>
+ </div>
+ </div>
+
+  <footer class="mt-auto py-3 border-top">
+    <div class="container text-end">
+      <small class="text-muted" style="font-size: 0.8rem;">
+        <i class="fa-solid fa-code me-1 text-primary"></i> พัฒนาระบบโดย <strong>พ.อ.อ.นิติภูมิ สุภศร</strong> | จนท.ชย.ผรก.สวบ.ทอ.
+      </small>
+    </div>
+  </footer>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // ===================== API (GitHub Pages -> Apps Script Web App) =====================
+  const API_URL = 'https://script.google.com/macros/s/AKfycbz5kOSaV0oZ1ksblCvGxKc_-J08C4Xvo6UUi4JlCAPlZV13rU8at4TWOuBliA5tznUV/exec'; // <-- แก้เป็น Web app URL (ลงท้าย /exec)
+  let ADMIN_PIN = '';          // เก็บในหน่วยความจำหลังเข้าสู่ระบบเท่านั้น
+  let adminDirty = false;      // true = มีการแก้ไขในตารางเจ้าหน้าที่ที่ยังไม่บันทึก
+  let lastStatusLoad = 0, lastAdminLoad = 0;
+
+  async function api(action, payload = {}) {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      // ต้องเป็น text/plain เพื่อเลี่ยง CORS preflight (Apps Script ไม่รองรับ OPTIONS)
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action: action }, payload))
+    });
+    let json;
+    try { json = await res.json(); } catch (e) { throw new Error('เซิร์ฟเวอร์ตอบกลับผิดรูปแบบ'); }
+    if (!json.ok) {
+      const err = new Error(json.error || 'API error');
+      err.code = json.error;
+      err.retryAfter = json.retryAfter;
+      err.attemptsLeft = json.attemptsLeft;
+      throw err;
+    }
+    return json.data;
+  }
+
+  // ===================== NAVIGATION & WIZARD =====================
+  window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab') || urlParams.get('p') || 'form';
+    
+    if (activeTab === 'status') {
+      const statusTabBtn = document.getElementById('status-tab');
+      if (statusTabBtn) { new bootstrap.Tab(statusTabBtn).show(); loadStatusData(); }
+    } else if (activeTab === 'admin') {
+      const adminTabBtn = document.getElementById('admin-tab');
+      if (adminTabBtn) new bootstrap.Tab(adminTabBtn).show();
+    } else {
+      const formTabBtn = document.getElementById('form-tab');
+      if (formTabBtn) new bootstrap.Tab(formTabBtn).show();
+    }
+
+    // ===================== ระบบ Auto-Refresh =====================
+    // - รีเฟรชทุก 2 นาที (เดิม 60 วินาที) เพื่อประหยัดโควตา Apps Script
+    // - หยุดรีเฟรชเมื่อแท็บเบราว์เซอร์ถูกซ่อน/ย่อ และรีเฟรชทันทีเมื่อกลับมาดู (ถ้าข้อมูลเก่ากว่า 1 นาที)
+    // - แท็บเจ้าหน้าที่ จะไม่รีเฟรชถ้ากำลังพิมพ์/แก้ไขแถวที่ยังไม่บันทึก
+    const REFRESH_INTERVAL_MS = 120000;
+    const STALE_AFTER_MS = 60000;
+
+    function autoRefresh(minAgeMs) {
+      if (document.hidden) return;
+      const now = Date.now();
+
+      const statusTab = document.getElementById('statusTabContent');
+      if (statusTab && statusTab.classList.contains('active') && now - lastStatusLoad >= minAgeMs) {
+        loadStatusData();
+      }
+
+      const adminTab = document.getElementById('adminTabContent');
+      const adminDash = document.getElementById('adminDashboard');
+      if (ADMIN_PIN && adminTab && adminTab.classList.contains('active') && adminDash && adminDash.style.display === 'block' && now - lastAdminLoad >= minAgeMs) {
+        const activeElement = document.activeElement;
+        // นับเฉพาะช่องแก้ไขในแถวของตาราง (ช่องค้นหา/ตัวกรองเดือนไม่ทำให้รีเฟรชหยุด)
+        const isEditing = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'SELECT' || activeElement.tagName === 'TEXTAREA') && !!activeElement.closest('tbody') && adminDash.contains(activeElement);
+        if (!isEditing && !adminDirty) loadAdminData();
+      }
+    }
+
+    setInterval(() => autoRefresh(STALE_AFTER_MS), REFRESH_INTERVAL_MS);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) autoRefresh(STALE_AFTER_MS); });
+
+    // จดจำว่าแถวในตารางเจ้าหน้าที่ถูกแก้ไขแต่ยังไม่บันทึก
+    const adminDashEl = document.getElementById('adminDashboard');
+    if (adminDashEl) {
+      const markDirty = (ev) => { if (ev.target && /^(status_|remarkSelect_|remarkCustom_|remarkDate_)/.test(ev.target.id || '')) adminDirty = true; };
+      adminDashEl.addEventListener('input', markDirty);
+      adminDashEl.addEventListener('change', markDirty);
+    }
+  });
+
+  function nextStep(step) {
+    document.getElementById('step1').style.display = (step === 1) ? 'block' : 'none';
+    document.getElementById('step2').style.display = (step === 2) ? 'block' : 'none';
+    document.getElementById('step3').style.display = (step === 3) ? 'block' : 'none';
+    const dots = [document.getElementById('stepIndicator1'), document.getElementById('stepIndicator2'), document.getElementById('stepIndicator3')];
+    dots.forEach((dot, idx) => {
+      if (dot) {
+        dot.classList.toggle('active', idx + 1 === step);
+        dot.classList.toggle('completed', idx + 1 < step);
+      }
+    });
+  }
+
+  // ===================== FORM LOGIC =====================
+  const locationData = {
+    "บก.สวบ.ทอ.": ["ห้อง ผอ.สวบ.ทอ.", "ห้อง รอง ผอ.สวบ.ทอ.(1)", "ห้อง รอง ผอ.สวบ.ทอ.(2)", "หน้าห้อง ผอ.สวบ.ทอ.", "หน้าห้อง รอง ผอ.สวบ.ทอ.", "โถงสำนักงาน ผู้บังคับบัญชา", "ห้องน้ำ ผอ.สวบ.ทอ."],
+    "กคผ.สวบ.ทอ.": ["ห้องเวชระเบียน", "OPD", "ห้อง X-RAY", "ห้องตรวจจิตวิทยาการบิน", "ห้องทันตกรรม", "ห้องตรวจการได้ยิน", "ห้องตรวจตา", "ห้องตรวจคลื่นหัวใจไฟฟ้าหัวใจ EKG", "ห้องจ่ายยา", "ห้องคลังยา", "ห้องตรวจคัดเลือก", "ห้องห้องธุรการ กคผ.สวบ.ทอ.", "ห้องเก็บเงิน", "ห้องพักแพทย์"],
+    "ศลพ.สวบ.ทอ.": ["ห้อง ผอ.ศลพ.สวบ.ทอ.", "ห้อง รอง ผอ.ศลพ.สวบ.ทอ.", "ห้อง ธุรการ ศลพ.สวบ.ทอ.", "ห้องวิทยุ ศลพ.สวบ.ทอ.", "ห้องคลัง (หน้าห้องคลังยา)", "ห้องคลัง(ข้างห้องจัดหา)"],
+    "กนว.สวบ.ทอ.": ["ห้อง ผอ.กนว.สวบ.ทอ.", "ห้อง รอง ผอ.กนว.สวบ.ทอ.", "ห้อง ธุรการ กนว.สวบ.ทอ.", "ห้องฝึกยิงเก้าอี้ดีด", "ห้องปรับบรรยากาศความดันต่ำ", "ห้องปรับบรรยากาศความดันสูง", "ห้อง AIR FOX", "ห้อง ไจโรเลป", "ห้องช่าง กนว.สวบ.ทอ.", "ห้อง Night Vision"],
+    "กวก.สวบ.ทอ.": ["ห้อง ผอ.กวก.สวบ.ทอ.", "ห้อง รอง ผอ.กวก.สวบ.ทอ.", "ห้อง ธุรการ กวก.สวบ.ทอ.", "ห้องฝ่ายเทคโนโลยีสารสนเทศและอุปกรณ์", "ห้องพักผ่อน", "ห้องสมุด"],
+    "กพบ.สวบ.ทอ.": ["ห้อง LAB", "ห้อง ธุรการ", "ห้องคลัง", "ห้องพักผ่อน"],
+    "ทสส.สวบ.ทอ.": ["ห้อง ทสส (อาคารหมายเลข3)", "ห้อง SERVER"],
+    "ห้องประชุม": ["ห้องประชุมหมอตระกูล", "ห้องประชุม บรรยาย 1", "ห้องประชุม อาคาร3 504"],
+    "ห้องน้ำ อาคาร 1": ["ห้องน้ำหญิง ชั้น 1 (หน้าห้องจ่ายยา)", "ห้องน้ำชาย ชั้น 1 (หน้าห้องจ่ายยา)", "ห้องน้ำหญิง V.I.P.", "ห้องน้ำชาย V.I.P.", "ห้องน้ำหญิง ชั้น 2 OPD", "ห้องน้ำชาย ชั้น 2 OPD", "ห้องน้ำหญิง ชั้น 3 บก.สวบ.ทอ.", "ห้องน้ำชาย ชั้น 3 บก.สวบ.ทอ."],
+    "ห้องน้ำ อาคาร 2": ["ห้องน้ำหญิง ชั้น 1 กนว.สวบ.ทอ.", "ห้องน้ำชาย ชั้น 1 กนว.สวบ.ทอ.", "ห้องน้ำหญิง ชั้นลอย (หน้าห้องจัดหา)", "ห้องน้ำชาย ชั้น 1 (หน้าห้องคลังยา)", "ห้องน้ำหญิง ชั้น 2 (หน้าห้องจิตวิทยาการบิน)", "ห้องน้ำชาย ชั้น 2 (หน้าห้องฟัน)", "ห้องน้ำหญิง ชั้น 3 (หน้าห้อง กำลังพล)", "ห้องน้ำชายชั้น 3 (หน้าห้องธุรการ ศลพ.สวบ.ทอ.)", "ห้องน้ำ ชั้นดาดฟ้า"],
+    "ห้องน้ำ อาคาร 3": ["ห้องน้ำหญิง ชั้น 2", "ห้องน้ำชาย ชั้น 2", "ห้องน้ำหญิง ชั้น 3", "ห้องน้ำชาย ชั้น 3", "ห้องน้ำหญิง ชัั้น 4", "ห้องน้ำชาย ชั้น 4", "ห้องน้ำหญิง ชั้น 5", "ห้องน้ำชาย ชั้น 5"],
+    "เวร.สวบ.ทอ.": ["ห้องรอรายงาน น.อำนวยการ", "ห้องนอน น.เวร รักษาการ", "ห้องนอน เวร แพทย์", "ห้องนอน เวร พยาบาลหญิง S92", "ห้องนอนเวร ชั้นดาดฟ้า"],
+    "ห้องอาหาร สวบ.ทอ.": ["ห้องอาหาร", "MEDIC LOUNGE", "ห้องน้ำชาย", "ห้องน้ำหญิง"],
+    "ผรก.สวบ.ทอ.": ["ธุรการ ผรก", "ช่างโยธา", "ขนส่ง", "พลาธิการ"]
+  };
+
+  function onDepartmentChange() {
+    const dept = document.getElementById('department').value;
+    const subDeptGroup = document.getElementById('subDeptGroup');
+    const subLocation = document.getElementById('subLocation');
+    const customGroup = document.getElementById('customLocationGroup');
+
+    subLocation.innerHTML = '';
+    if (subDeptGroup) subDeptGroup.style.display = 'none';
+    if (customGroup) customGroup.style.display = 'none';
+    if (!dept) return;
+
+    if (dept === 'สถานที่อื่นๆ' || dept.includes('ทางเดิน')) {
+      if (customGroup) customGroup.style.display = 'block'; return;
+    }
+
+    const options = locationData[dept];
+    if (options && options.length > 0) {
+      if (subDeptGroup) subDeptGroup.style.display = 'block';
+      subLocation.add(new Option('-- กรุณาเลือกห้อง/ตำแหน่ง --', ''));
+      options.forEach(opt => subLocation.add(new Option(opt.startsWith('-') ? opt : `-${opt}`, opt)));
+      subLocation.add(new Option('-อื่นๆ (ระบุเอง)', 'อื่นๆ'));
+    }
+  }
+
+  function onSubLocationChange() {
+    const subLoc = document.getElementById('subLocation').value;
+    const customGroup = document.getElementById('customLocationGroup');
+    if (customGroup) customGroup.style.display = (subLoc === 'อื่นๆ' || subLoc === '-อื่นๆ (ระบุเอง)') ? 'block' : 'none';
+  }
+
+  function getFullLocationText() {
+    const dept = document.getElementById('department').value;
+    const subLoc = document.getElementById('subLocation').value;
+    const customLoc = document.getElementById('customLocation') ? document.getElementById('customLocation').value.trim() : '';
+    if (dept === 'สถานที่อื่นๆ' || dept.includes('ทางเดิน')) return customLoc ? `${dept} (${customLoc})` : dept;
+    else if (subLoc === 'อื่นๆ' || subLoc === '-อื่นๆ (ระบุเอง)') return customLoc ? `${dept} - ${customLoc}` : dept;
+    else if (subLoc) return `${dept} (${subLoc})`;
+    return dept;
+  }
+
+    // ===== ย่อรูปก่อนส่ง (ข้อ 4) =====
+  function compressImage(file, maxSize, quality, cb) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        cb(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => cb('');
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const repairForm = document.getElementById('repairForm');
+  if (repairForm) {
+    repairForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitBtn');
+      const btnHtml = '<i class="fa-solid fa-paper-plane me-1"></i> ส่งแจ้งซ่อม';
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> กำลังบันทึกข้อมูล...';
+
+      const photoInput = document.getElementById('photoInput');
+      let photoBase64 = '';
+
+      const sendData = () => {
+        const formData = {
+          reporterName: document.getElementById('reporterName').value,
+          phone: document.getElementById('phone').value,
+          department: getFullLocationText(),
+          subLocation: document.getElementById('subLocation').value || '',
+          repairType: document.getElementById('repairType').value,
+          detail: document.getElementById('detail').value,
+          photoBase64: photoBase64
+        };
+        api('submitRepairJob', { formData: formData })
+            .then(res => {
+              alert((res && res.message) || 'บันทึกข้อมูลเรียบร้อยแล้ว!');
+              submitBtn.disabled = false; submitBtn.innerHTML = btnHtml;
+              repairForm.reset(); nextStep(1);
+              const statusTabBtn = document.getElementById('status-tab');
+              if (statusTabBtn) { new bootstrap.Tab(statusTabBtn).show(); loadStatusData(); }
+            })
+            .catch(err => {
+              alert('เกิดข้อผิดพลาด: ' + (err.message || err) + '\nกรุณาตรวจสอบในหน้าติดตามสถานะก่อนส่งซ้ำ');
+              submitBtn.disabled = false; submitBtn.innerHTML = btnHtml;
+            });
+      };
+
+      if (photoInput && photoInput.files && photoInput.files.length > 0) {
+        compressImage(photoInput.files[0], 1280, 0.7, function(dataUrl) {
+          photoBase64 = dataUrl;
+          sendData();
+        });
+      } else { sendData(); }
+    });
+  }
+
+  // ===================== STATUS & DATA PARSING =====================
+  const thaiMonths = ["", "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+
+  function parseJobMonthYear(timestampStr) {
+    if (!timestampStr) return null;
+    const cleanStr = timestampStr.toString().trim().split(' ')[0];
+    const parts = cleanStr.includes('/') ? cleanStr.split('/') : cleanStr.split('-');
+    if (parts.length < 3) return null;
+
+    let month, year;
+    if (parts[0].length === 4) { month = parseInt(parts[1], 10); year = parseInt(parts[0], 10); } 
+    else { month = parseInt(parts[1], 10); year = parseInt(parts[2], 10); }
+    if (year > 2500) year -= 543; 
+
+    return { month: month, year: year, key: `${String(month).padStart(2, '0')}/${year}` };
+  }
+  function formatToThaiYear(timestampStr) {
+  if (!timestampStr || timestampStr === '-') return '-';
+  
+  // ตัดเอาเฉพาะส่วนวันที่ (แยกช่องว่างถ้ามีเวลาติดมา)
+  const datePart = timestampStr.toString().trim().split(' ')[0];
+  const parts = datePart.includes('/') ? datePart.split('/') : datePart.split('-');
+  
+  if (parts.length === 3) {
+    let d, m, y;
+    if (parts[0].length === 4) { 
+      // รูปแบบ YYYY-MM-DD
+      y = parseInt(parts[0], 10); m = parts[1]; d = parts[2];
+    } else { 
+      // รูปแบบ DD/MM/YYYY 
+      d = parts[0]; m = parts[1]; y = parseInt(parts[2], 10);
+    }
+    
+    if (y < 2500) y += 543; // แปลง ค.ศ. เป็น พ.ศ.
+    return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
+  }
+  return datePart;
+}
+  // แปลง timestamp "dd/MM/yyyy HH:mm" เป็นตัวเลขเพื่อใช้เรียงลำดับ
+  function getTimestampValue(timestampStr) {
+    if (!timestampStr || timestampStr === '-') return 0;
+    const [datePart, timePart] = timestampStr.toString().trim().split(' ');
+    const parts = datePart.includes('/') ? datePart.split('/') : datePart.split('-');
+    if (parts.length < 3) return 0;
+
+    let d, m, y;
+    if (parts[0].length === 4) { y = parseInt(parts[0], 10); m = parseInt(parts[1], 10); d = parseInt(parts[2], 10); }
+    else { d = parseInt(parts[0], 10); m = parseInt(parts[1], 10); y = parseInt(parts[2], 10); }
+    if (y > 2500) y -= 543;
+
+    let hh = 0, mm = 0;
+    if (timePart) {
+      const t = timePart.split(':');
+      hh = parseInt(t[0], 10) || 0;
+      mm = parseInt(t[1], 10) || 0;
+    }
+    return new Date(y, m - 1, d, hh, mm).getTime();
+  }
+
+  // ลำดับกลุ่ม: 0 = รอ/กำลังดำเนินการ (บนสุด), 1 = ดำเนินการแล้วเสร็จ, 2 = ไม่สามารถดำเนินการได้ (ท้ายสุด)
+  function getStatusGroup(status) {
+    if (status === 'ดำเนินการแล้วเสร็จ') return 1;
+    if (status === 'ไม่สามารถดำเนินการได้') return 2;
+    return 0;
+  }
+
+  let allJobsData = [];
+  function loadStatusData() {
+    lastStatusLoad = Date.now();
+    api('getPublicJobs')
+      .then(jobs => { allJobsData = jobs || []; renderStatusTable(); })
+      .catch(err => console.error(err));
+  }
+
+  // 🟢 แสดงรายการฝั่ง Public
+  function renderStatusTable() {
+    const tbody = document.getElementById('statusTableBody');
+    if (!tbody) return;
+    const searchInput = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase() : '';
+    const now = new Date();
+    const currentKey = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+
+    const monthBadge = document.getElementById('currentMonthBadge');
+    if (monthBadge) monthBadge.innerText = `ประจำเดือน${thaiMonths[now.getMonth() + 1]} ${now.getFullYear() > 2500 ? now.getFullYear() : now.getFullYear() + 543}`;
+
+        tbody.innerHTML = '';
+    const filteredJobs = allJobsData.filter(job => {
+      if (job.status === 'ยกเลิก') return false; // ไม่แสดงงานที่ยกเลิกในหน้าติดตามสถานะ
+      const parsed = parseJobMonthYear(job.timestamp);
+      const isCurrentMonth = parsed && (parsed.key === currentKey);
+      const fullText = `${job.department} ${job.repairType} ${job.detail}`.toLowerCase(); 
+      return isCurrentMonth && fullText.includes(searchInput);
+    });
+
+        // เรียง: รอดำเนินการ (บน) -> เสร็จแล้ว -> ไม่สามารถดำเนินการได้ (ท้ายสุด) โดยแต่ละกลุ่มเรียงวันที่ ใหม่ -> เก่า
+    filteredJobs.sort((a, b) => {
+      const groupDiff = getStatusGroup(a.status) - getStatusGroup(b.status);
+      if (groupDiff !== 0) return groupDiff;
+      return getTimestampValue(b.timestamp) - getTimestampValue(a.timestamp);
+    });
+
+    if (filteredJobs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">ยังไม่มีรายการแจ้งซ่อมประจำเดือนปัจจุบัน</td></tr>'; return;
+    }
+
+    filteredJobs.forEach(job => {
+      let badgeClass = 'status-pending';
+      if (job.status === 'กำลังดำเนินการ') badgeClass = 'status-progress';
+      if (job.status === 'ดำเนินการแล้วเสร็จ') badgeClass = 'status-done';
+      if (job.status === 'ยกเลิก' || job.status === 'ไม่สามารถดำเนินการได้') badgeClass = 'status-cancel';
+
+      const dateOnly = formatToThaiYear(job.timestamp);
+
+      tbody.innerHTML += `
+        <tr role="row">
+          <td role="cell" data-label="วันที่"><div class="cell-content"><span class="fw-semibold text-slate-700">${dateOnly}</span></div></td>
+          <td role="cell" data-label="สถานที่"><div class="cell-content"><strong>${job.department}</strong></div></td>
+          <td role="cell" data-label="ประเภทงาน"><div class="cell-content">${job.repairType}</div></td>
+          <td role="cell" data-label="อาการชำรุด"><div class="cell-content">${job.detail}</div></td>
+          <td role="cell" data-label="สถานะ"><div class="cell-content"><span class="badge-status ${badgeClass}">${job.status}</span></div></td>
+          <td role="cell" data-label="หมายเหตุช่าง" class="text-muted"><div class="cell-content">${job.techRemark || '-'}</div></td>
+        </tr>
+      `;
+    });
+  }
+
+  function filterStatusTable() { renderStatusTable(); }
+
+  // ===================== ADMIN & DASHBOARD LOGIC =====================
+  let allAdminJobsData = [];
+  let repairChartInstance = null;
+
+  // ----- ล็อกหน้าใส่ PIN (ฝั่งแสดงผล; การล็อกจริงอยู่ที่ Apps Script) -----
+  let pinLockTimer = null;
+
+  function setPinMessage(text) {
+    const el = document.getElementById('pinMessage');
+    if (el) el.textContent = text || '';
+  }
+
+  function startLockCountdown(seconds) {
+    clearInterval(pinLockTimer);
+    const input = document.getElementById('adminPin');
+    const btn = document.querySelector('#adminAuthCard button');
+    let remain = Math.max(1, Math.ceil(Number(seconds) || 0));
+    input.disabled = true; btn.disabled = true;
+    const tick = () => {
+      if (remain <= 0) {
+        clearInterval(pinLockTimer);
+        input.disabled = false; btn.disabled = false;
+        setPinMessage('');
+        return;
+      }
+      const m = Math.floor(remain / 60), s = remain % 60;
+      setPinMessage('ใส่ PIN ผิดเกินกำหนด ระบบล็อกชั่วคราว ลองใหม่ได้ใน ' + m + ':' + String(s).padStart(2, '0') + ' นาที');
+      remain--;
+    };
+    tick();
+    pinLockTimer = setInterval(tick, 1000);
+  }
+
+  function verifyAdminPin() {
+    const input = document.getElementById('adminPin');
+    const btn = document.querySelector('#adminAuthCard button');
+    const pin = input.value;
+    if (btn.disabled || input.disabled) return;
+    if (!pin) { setPinMessage('กรุณากรอกรหัส PIN'); return; }
+
+    setPinMessage('');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> ตรวจสอบ...';
+
+    api('verifyPin', { pin: pin })
+      .then(r => {
+        btn.innerText = 'เข้าสู่ระบบ';
+        input.value = '';
+        if (r && r.valid) {
+          btn.disabled = false;
+          ADMIN_PIN = pin;
+          document.getElementById('adminAuthCard').style.display = 'none';
+          document.getElementById('adminDashboard').style.display = 'block';
+          loadAdminData();
+        } else if (r && r.locked) {
+          startLockCountdown(r.retryAfter);
+        } else {
+          btn.disabled = false;
+          setPinMessage('รหัส PIN ไม่ถูกต้อง (เหลืออีก ' + (r && r.attemptsLeft != null ? r.attemptsLeft : '-') + ' ครั้ง ก่อนระบบล็อกชั่วคราว)');
+          input.focus();
+        }
+      })
+      .catch(err => {
+        btn.disabled = false; btn.innerText = 'เข้าสู่ระบบ';
+        setPinMessage('เชื่อมต่อไม่สำเร็จ: ' + err.message);
+      });
+  }
+
+  function isAuthError(err) { return !!err && (err.code === 'UNAUTHORIZED' || err.code === 'LOCKED'); }
+
+  // เด้งกลับหน้าใส่ PIN เมื่อเซิร์ฟเวอร์ปฏิเสธ PIN (เช่น ถูกล็อก)
+  function handleAdminError(err) {
+    if (!isAuthError(err)) { console.error(err); return; }
+    ADMIN_PIN = '';
+    document.getElementById('adminDashboard').style.display = 'none';
+    document.getElementById('adminAuthCard').style.display = '';
+    document.getElementById('adminPin').value = '';
+    if (err.code === 'LOCKED') startLockCountdown(err.retryAfter);
+    else setPinMessage('หมดเวลาเข้าสู่ระบบ กรุณาใส่ PIN อีกครั้ง');
+  }
+
+  function loadAdminData() {
+    if (!ADMIN_PIN) return;
+    lastAdminLoad = Date.now();
+    api('getRepairJobs', { pin: ADMIN_PIN })
+      .then(jobs => {
+        allAdminJobsData = jobs || [];
+        populateAdminMonthDropdown(allAdminJobsData);
+        renderAdminTable();
+      })
+      .catch(handleAdminError);
+  }
+
+  function populateAdminMonthDropdown(jobs) {
+    const monthSelect = document.getElementById('adminMonthFilter');
+    if (!monthSelect) return;
+    const monthSet = new Set();
+    jobs.forEach(job => { const parsed = parseJobMonthYear(job.timestamp); if (parsed) monthSet.add(parsed.key); });
+    
+    const currVal = monthSelect.value;
+    monthSelect.innerHTML = '<option value="all">แสดงทุกเดือน (ค้นหาทั้งหมด)</option>';
+    Array.from(monthSet).sort().reverse().forEach(mY => {
+      const [mStr, yStr] = mY.split('/');
+      const monthName = thaiMonths[parseInt(mStr, 10)] || mStr;
+      const yearBE = parseInt(yStr, 10) > 2500 ? parseInt(yStr, 10) : parseInt(yStr, 10) + 543;
+      monthSelect.add(new Option(`เดือน${monthName} ${yearBE}`, mY));
+    });
+    if(Array.from(monthSet).includes(currVal)) monthSelect.value = currVal;
+  }
+
+  function renderAdminTable() {
+    const pendingTbody = document.getElementById('adminPendingTableBody');
+    const completedTbody = document.getElementById('adminCompletedTableBody');
+    if (!pendingTbody || !completedTbody) return;
+
+    const selectedMonth = document.getElementById('adminMonthFilter') ? document.getElementById('adminMonthFilter').value : 'all';
+    const searchInput = document.getElementById('adminSearchInput') ? document.getElementById('adminSearchInput').value.toLowerCase() : '';
+
+    adminDirty = false;
+    pendingTbody.innerHTML = ''; completedTbody.innerHTML = '';
+
+    const filteredJobs = allAdminJobsData.filter(job => {
+      let matchMonth = true;
+      if (selectedMonth !== 'all') {
+        const parsed = parseJobMonthYear(job.timestamp);
+        matchMonth = parsed && (parsed.key === selectedMonth);
+      }
+      const fullText = `${job.department} ${job.detail} ${job.reporterName} ${job.phone} ${job.techRemark || ''} ${job.status || ''}`.toLowerCase();
+      return matchMonth && fullText.includes(searchInput);
+    });
+
+    let pendingCount = 0, completedCount = 0;
+
+    filteredJobs.forEach(job => {
+      const isPending = (job.status === 'รอดำเนินการ') && (!job.techRemark || job.techRemark === '-' || job.techRemark.trim() === '');
+      if (isPending) {
+        pendingTbody.innerHTML += createAdminRowHtml(job, false); pendingCount++;
+      } else {
+        completedTbody.innerHTML += createAdminRowHtml(job, true); completedCount++;
+      }
+    });
+
+    if (pendingCount === 0) pendingTbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">ไม่มีรายการรอดำเนินการ</td></tr>';
+    if (completedCount === 0) completedTbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">ยังไม่มีรายการงานที่บันทึกแล้ว</td></tr>';
+
+    updatePublicDashboard(allAdminJobsData);
+  }
+
+  function toggleRemarkInput(rowIndex) {
+    const select = document.getElementById(`remarkSelect_${rowIndex}`);
+    const customInput = document.getElementById(`remarkCustom_${rowIndex}`);
+    if (select && customInput) customInput.style.display = (select.value === 'อื่นๆ') ? 'block' : 'none';
+  }
+
+  function createAdminRowHtml(job, isSaved) {
+    const currentRemark = job.techRemark && job.techRemark !== '-' ? job.techRemark : '';
+    const remarkParts = currentRemark.split('\n');
+    const firstLineRemark = remarkParts[0].trim(); 
+
+    const standardTechs = ['พ.อ.อ.นิติภูมิ', 'พ.อ.อ.ศรายุทธ'];
+    const isStandard = standardTechs.includes(firstLineRemark);
+    const isOther = !isStandard && firstLineRemark !== '';
+
+    const selectVal = isStandard ? firstLineRemark : (isOther ? 'อื่นๆ' : '');
+    const customVal = isOther ? firstLineRemark : '';
+
+    const btnText = isSaved ? '<i class="fa-solid fa-pen-to-square me-1"></i>แก้ไข' : '<i class="fa-solid fa-floppy-disk me-1"></i>บันทึก';
+    const btnClass = isSaved ? 'btn-warning text-dark' : 'btn-primary';
+
+    return `
+      <tr role="row">
+        <td role="cell" data-label="วันเวลา"><div class="cell-content">${formatToThaiYear(job.timestamp)}</div></td>
+        <td role="cell" data-label="สถานที่"><div class="cell-content"><strong>${job.department}</strong></div></td>
+        <td role="cell" data-label="อาการชำรุด"><div class="cell-content">${job.detail}</div></td>
+        <td role="cell" data-label="ผู้แจ้ง/เบอร์โทร"><div class="cell-content">${job.reporterName} <br><small>(${job.phone})</small></div></td>
+        <td role="cell" data-label="ปรับสถานะ" class="cell-editor"><div class="cell-content">
+          <select class="form-select form-select-sm" id="status_${job.rowIndex}">
+            <option value="รอดำเนินการ" ${job.status === 'รอดำเนินการ' ? 'selected' : ''}>รอดำเนินการ</option>            
+            <option value="ดำเนินการแล้วเสร็จ" ${job.status === 'ดำเนินการแล้วเสร็จ' ? 'selected' : ''}>ดำเนินการแล้วเสร็จ</option>
+            <option value="ไม่สามารถดำเนินการได้" ${job.status === 'ไม่สามารถดำเนินการได้' ? 'selected' : ''}>ไม่สามารถดำเนินการได้</option>
+            <option value="ยกเลิก" ${job.status === 'ยกเลิก' ? 'selected' : ''}>ยกเลิก</option>
+          </select>
+        </div></td>
+        <td role="cell" data-label="หมายเหตุช่าง" class="cell-editor"><div class="cell-content">
+          <select class="form-select form-select-sm" id="remarkSelect_${job.rowIndex}" onchange="toggleRemarkInput(${job.rowIndex})">
+            <option value="">-- เลือกช่าง / หมายเหตุ --</option>
+            <option value="พ.อ.อ.นิติภูมิ" ${selectVal === 'พ.อ.อ.นิติภูมิ' ? 'selected' : ''}>พ.อ.อ.นิติภูมิ</option>
+            <option value="พ.อ.อ.ศรายุทธ" ${selectVal === 'พ.อ.อ.ศรายุทธ' ? 'selected' : ''}>พ.อ.อ.ศรายุทธ</option>
+            <option value="อื่นๆ" ${selectVal === 'อื่นๆ' ? 'selected' : ''}>อื่นๆ (ระบุเอง)</option>
+          </select>
+          <input type="text" class="form-control form-control-sm mt-1" id="remarkCustom_${job.rowIndex}" value="${customVal}" placeholder="ระบุเพิ่มเติม..." style="display: ${selectVal === 'อื่นๆ' ? 'block' : 'none'};">
+          <input type="text" class="form-control form-control-sm mt-1 border-primary" id="remarkDate_${job.rowIndex}" title="ระบุวันที่ดำเนินการเสร็จ" placeholder="ว/ด/ป">
+        </div></td>
+        <td role="cell" data-label="จัดการ" class="cell-editor"><div class="cell-content">
+          <div class="d-flex flex-column gap-1">
+            <button class="btn btn-sm ${btnClass} fw-bold" onclick="saveAdminUpdate(${job.rowIndex})">${btnText}</button>
+            <button class="btn btn-sm btn-outline-dark fw-bold" onclick="triggerPrintJobCard(${job.rowIndex})"><i class="fa-solid fa-print"></i> พิมพ์</button>
+          </div>
+        </div></td>
+      </tr>
+    `;
+  }
+
+  function saveAdminUpdate(rowIndex) {
+    const statusSelect = document.getElementById(`status_${rowIndex}`);
+    const remarkSelect = document.getElementById(`remarkSelect_${rowIndex}`);
+    const remarkCustom = document.getElementById(`remarkCustom_${rowIndex}`);
+    const remarkDate = document.getElementById(`remarkDate_${rowIndex}`);
+
+    if (!statusSelect) return;
+
+    const status = statusSelect.value;
+    const selectVal = remarkSelect ? remarkSelect.value : '';
+    const customVal = remarkCustom ? remarkCustom.value.trim() : '';
+    const dateInputVal = (remarkDate && remarkDate.value) ? remarkDate.value.trim() : '';
+
+    let finalRemark = '-';
+    if (selectVal === 'อื่นๆ') {
+      finalRemark = customVal !== '' ? customVal : 'อื่นๆ';
+    } else if (selectVal !== '') {
+      finalRemark = selectVal;
+    }
+
+    const targetJob = allAdminJobsData.find(j => j.rowIndex === rowIndex);
+
+    if (status === 'ดำเนินการแล้วเสร็จ') {
+      let dateStamp = '';
+      if (dateInputVal) {
+        if (dateInputVal.includes('-') && dateInputVal.split('-').length === 3) {
+          const parts = dateInputVal.split('-');
+          dateStamp = `${parts[2]}/${parts[1]}/${parseInt(parts[0]) > 2500 ? parts[0] : parseInt(parts[0]) + 543}`;
+        } else {
+          dateStamp = dateInputVal;
+        }
+      } else {
+        const now = new Date();
+        dateStamp = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear() + 543}`;
+      }
+      
+      finalRemark = (finalRemark !== '-' && finalRemark !== '') ? `${finalRemark}\n${dateStamp}` : dateStamp;
+    }
+
+    api('updateJobStatus', { pin: ADMIN_PIN, rowIndex: rowIndex, newStatus: status, techRemark: finalRemark })
+      .then(() => {
+        if (targetJob) { targetJob.status = status; targetJob.techRemark = finalRemark; }
+        renderAdminTable();
+      })
+      .catch(err => {
+        if (isAuthError(err)) { handleAdminError(err); alert('ไม่ได้บันทึก: เซสชันหมดอายุหรือระบบถูกล็อก กรุณาเข้าสู่ระบบใหม่'); }
+        else alert('บันทึกไม่สำเร็จ: ' + err.message);
+      });
+  }
+
+  function updatePublicDashboard(jobsData) {
+    const selectedMonth = document.getElementById('adminMonthFilter') ? document.getElementById('adminMonthFilter').value : 'all';
+
+    const activeJobs = jobsData.filter(job => {
+      if (job.status === 'ยกเลิก') return false;
+      if (selectedMonth !== 'all') {
+        const parsed = parseJobMonthYear(job.timestamp);
+        return parsed && (parsed.key === selectedMonth);
+      }
+      return true;
+    });
+
+    const totalCount = activeJobs.length;
+    let doneCount = 0, pendingCount = 0, failedCount = 0;
+    const typeCounts = { 'ไฟฟ้า': 0, 'เครื่องปรับอากาศ': 0, 'ประปา': 0, 'อาคารและสถานที่': 0, 'อื่นๆ': 0 };
+    const typeAliases = { 'งานไฟฟ้า': 'ไฟฟ้า', 'งานเครื่องปรับอากาศ': 'เครื่องปรับอากาศ', 'งานประปา/ห้องน้ำ': 'ประปา', 'งานอาคาร/อาคารสถานที่': 'อาคารและสถานที่' };
+
+    activeJobs.forEach(job => {
+      if (job.status === 'ดำเนินการแล้วเสร็จ') doneCount++;
+      else if (job.status === 'ไม่สามารถดำเนินการได้') failedCount++;
+      else pendingCount++;
+
+      const type = typeAliases[job.repairType] || job.repairType || 'อื่นๆ';
+      if (typeCounts.hasOwnProperty(type)) typeCounts[type]++; else typeCounts['อื่นๆ']++;
+    });
+
+    document.getElementById('dashTotalCount').innerText = totalCount.toLocaleString('th-TH');
+    document.getElementById('dashDoneCount').innerText = doneCount.toLocaleString('th-TH');
+    document.getElementById('dashPendingCount').innerText = pendingCount.toLocaleString('th-TH');
+    document.getElementById('dashFailedCount').innerText = failedCount.toLocaleString('th-TH');
+    const completionRate = totalCount > 0 ? (doneCount / totalCount) * 100 : 0;
+    document.getElementById('completionRate').textContent = completionRate.toFixed(0);
+    
+    document.getElementById('completionFill').style.width = `${completionRate}%`;
+
+    const typeListContainer = document.getElementById('typeProgressList');
+    if (typeListContainer) {
+      typeListContainer.innerHTML = '';
+      const colorMap = { 'ไฟฟ้า': '#f59e0b', 'เครื่องปรับอากาศ': '#8b5cf6', 'ประปา': '#10b981', 'อาคารและสถานที่': '#3b82f6', 'อื่นๆ': '#64748b' };
+      Object.keys(typeCounts).forEach(type => {
+        const count = typeCounts[type];
+        const percent = totalCount > 0 ? ((count / totalCount) * 100).toFixed(1) : 0;
+        const color = colorMap[type] || '#64748b';
+        typeListContainer.innerHTML += `
+          <div class="breakdown-row mb-3">
+            <div class="breakdown-labels">
+              <span class="breakdown-type fw-bold text-slate-700" style="color: ${color};"><i class="fa-solid fa-circle me-1" style="font-size:8px;"></i>${type}</span>
+              <span class="breakdown-count text-muted">${count} งาน <span class="breakdown-percent">(${percent}%)</span></span>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar" style="width: ${percent}%; background-color: ${color};"></div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    const ctx = document.getElementById('repairTypeChart');
+    if (ctx && typeof Chart !== 'undefined') {
+      document.getElementById('repairChartPanel').hidden = false;
+      document.getElementById('repairTypeBreakdown').className = 'col-7';
+      if (repairChartInstance) repairChartInstance.destroy();
+      repairChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(typeCounts),
+          datasets: [{ data: Object.values(typeCounts), backgroundColor: ['#f59e0b', '#8b5cf6', '#10b981', '#3b82f6', '#64748b'], borderWidth: 0 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, cutout: '75%' }
+      });
+    }
+  }
+
+  // ==========================================
+  // พิมพ์ใบงานแจ้งซ่อม
+  // ==========================================
+  function triggerPrintJobCard(rowIndex) {
+    const job = allAdminJobsData.find(j => j.rowIndex === rowIndex);
+    if (!job) return;
+
+    const validJobs = allAdminJobsData.filter(j => j.status !== 'ยกเลิก').sort((a, b) => a.rowIndex - b.rowIndex);
+    const validIndex = validJobs.findIndex(j => j.rowIndex === rowIndex);
+
+    let jobNoFormatted = "ยกเลิก"; 
+    if (validIndex !== -1) jobNoFormatted = "MT-" + String(validIndex + 1).padStart(3, '0');
+
+    document.getElementById('printJobNo').innerText = jobNoFormatted;
+    document.getElementById('printJobDate').innerText = job.timestamp ? formatToThaiYear(job.timestamp) : '-';
+    document.getElementById('printReporterName').innerText = job.reporterName || '-';
+    document.getElementById('printPhone').innerText = job.phone || '-';
+    document.getElementById('printRepairType').innerText = job.repairType || '-';
+    document.getElementById('printDetail').innerText = job.detail || '-';
+
+    // แยกข้อมูลสถานที่ (เช่น "บก.สวบ.ทอ. (ห้อง ผอ.สวบ.ทอ.)" หรือ "บก.สวบ.ทอ.")
+    let fullLoc = job.department || '';
+    let mainDept = fullLoc;
+    let subLoc = '-';
+
+    if (fullLoc.includes('(') && fullLoc.includes(')')) {
+      // กรณีมีวงเล็บย่อย เช่น บก.สวบ.ทอ. (ห้อง ผอ.สวบ.ทอ.) หรือ สถานที่อื่นๆ (ลานจอดรถ)
+      let parts = fullLoc.split('(');
+      mainDept = parts[0].trim();
+      subLoc = parts[1].replace(')', '').trim();
+    } else if (fullLoc.includes(' - ')) {
+      // กรณีมีขีดขั้น เช่น กคผ.สวบ.ทอ. - ห้องตรวจพิเศษ
+      let parts = fullLoc.split(' - ');
+      mainDept = parts[0].trim();
+      subLoc = parts[1].trim();
+    }
+
+    document.getElementById('printDept').innerText = mainDept;
+    document.getElementById('printSubLocation').innerText = subLoc;
+
+    const cardDiv = document.getElementById('printableJobCard');
+    cardDiv.style.display = 'block';
+    setTimeout(() => { window.print(); cardDiv.style.display = 'none'; }, 300);
+  }
+</script>
+
+<!-- =========================================================
+     🖨️ แม่แบบใบงานแจ้งซ่อมแซม 
+     ========================================================= -->
+<div id="printableJobCard" style="display: none;">
+  <div class="job-card-box">
+    <div class="jc-head">
+      <div class="jc-page-no">1/1</div>
+      <div class="jc-title">
+        <div class="t1">ใบงานแจ้งซ่อมแซม สายงานช่างโยธา แผนกบริการ</div>
+        <div class="t2">สถาบันเวชศาสตร์การบินกองทัพอากาศ</div>
+      </div>
+    </div>
+    <table class="jc-jobno">
+      <tr><td class="k">เลขที่ใบงาน:</td><td class="v" id="printJobNo">MT-001</td></tr>
+      <tr><td class="k">วันที่รับแจ้ง:</td><td class="v" id="printJobDate">-</td></tr>
+    </table>
+    <table class="sheet-table"><colgroup><col style="width: 21.5%;"><col style="width: 78.5%;"></colgroup>
+      <tr><th class="hdr" colspan="2">[ ข้อมูลผู้แจ้งความต้องการ ]</th></tr>
+      <tr class="h-std"><td class="lbl">ชื่อ - สกุล ผู้แจ้ง:</td><td id="printReporterName">-</td></tr>
+      <tr class="h-std"><td class="lbl">เบอร์ติดต่อภายใน:</td><td id="printPhone">-</td></tr>
+      <tr class="h-std"><td class="lbl">กอง/แผนก:</td><td id="printDept">-</td></tr>
+    </table>
+    <table class="sheet-table"><colgroup><col style="width: 21.5%;"><col style="width: 78.5%;"></colgroup>
+      <tr><th class="hdr" colspan="2">[ รายละเอียดงานซ่อมแซม ]</th></tr>
+      <tr class="h-std"><td class="lbl">ประเภทงาน:</td><td id="printRepairType">-</td></tr>
+      <tr class="h-std"><td class="lbl">สถานที่:</td><td id="printSubLocation">-</td></tr>
+      <tr class="h-md"><td class="lbl">สาเหตุชำรุดเบื้องต้น:</td><td id="printDetail">-</td></tr>
+    </table>
+    <table class="sheet-table"><colgroup><col style="width: 21.5%;"><col style="width: 78.5%;"></colgroup>
+      <tr><th class="hdr" colspan="2">[ ส่วนที่ 1: ผลการดำเนินการ (สำหรับเจ้าหน้าที่ช่าง) ]</th></tr>
+      <tr class="h-std"><td class="lbl">วันที่ดำเนินแก้ไข:</td><td>วันที่ ........ เดือน .................... พ.ศ. ................</td></tr>
+      <tr class="h-lg"><td class="lbl">สถานะดำเนินงาน:</td><td class="status-list">[&nbsp;&nbsp;] ดำเนินการแล้วเสร็จ (ไม่ใช้วัสดุ)<br>[&nbsp;&nbsp;] ดำเนินการแล้วเสร็จ (ใช้วัสดุและรายงานการใช้)<br>[&nbsp;&nbsp;] ไม่สามารถซ่อมแซมได้</td></tr>
+      <tr class="h-md2"><td class="lbl">สาเหตุ / ข้อเสนอแนะ:</td><td class="dots-cell">........................................................................................................................................................................................................................................</td></tr>
+    </table>
+    <table class="sheet-table mat-table"><colgroup><col style="width: 21.5%;"><col style="width: 52%;"><col style="width: 13.25%;"><col style="width: 13.25%;"></colgroup>
+      <thead><tr><th class="hdr" colspan="4">[ ส่วนที่ 2: รายงานการใช้ วัสดุ ในการซ่อมแซม ]</th></tr><tr class="colhead"><th>ลำดับ</th><th>รายการ</th><th>จำนวน</th><th>หน่วย</th></tr></thead>
+      <tbody><tr><td>1</td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td></tr><tr><td>3</td><td></td><td></td><td></td></tr><tr><td>4</td><td></td><td></td><td></td></tr><tr><td>5</td><td></td><td></td><td></td></tr></tbody>
+    </table>
+    <table class="sheet-table">
+      <tr><th class="hdr" style="height: 7.9mm;">[ ส่วนที่ 3: ประเมินความพึงพอใจการบริการ (สำหรับผู้แจ้งซ่อมหรือผู้แทน) ]</th></tr>
+      <tr style="height: 6.9mm;"><td class="sat-row" style="text-align: left;">ระดับความพึงพอใจ:<span class="opt">[&nbsp;&nbsp;] ดี</span><span class="opt">[&nbsp;&nbsp;] พอใช้</span><span class="opt last">[&nbsp;&nbsp;] ปรับปรุง</span></td></tr>
+    </table>
+    <div class="sign-row">
+      <div class="sign-block">ลงชื่อ............................................<br>หน.ผรก.สวบ.ทอ.<br>(............................................)<br>วันที่ ........ / ........ / ........</div>
+      <div class="sign-block">ลงชื่อ............................................<br>จนท.ชย.ผรก.สวบ.ทอ.<br>(............................................)<br>วันที่ ........ / ........ / ........</div>
+    </div>
+    <div class="sign-row second">
+      <div class="sign-block">ลงชื่อ............................................<br>ผู้แจ้งซ่อม/ผู้แทน<br>(............................................)<br>วันที่ ........ / ........ / ........</div>
+    </div>
+    <div class="doc-code"><div>QF-SER-09 REV.02</div><div>วันที่บังคับใช้ 06 ก.ค.2569</div></div>
+  </div>
+</div>
+</body>
+</html>
