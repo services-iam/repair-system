@@ -9,6 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -90,21 +91,64 @@
       .jobs-table tbody td.cell-editor { display: block; }
       .jobs-table td.cell-editor::before { display: block; margin-bottom: 6px; }
     }
-    /* Dashboard specific */
-    .metric-card { position: relative; display: flex; flex-direction: column; padding: 20px; min-height: 190px; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; }
-    .metric-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; margin-bottom: 14px; font-size: 1rem; }
-    .bg-gradient-blue { background: #102c48; color: #fff; } .bg-gradient-blue .metric-icon { background: #ffffff14; color: #bae6fd; }
-    .bg-gradient-green .metric-icon { background: #ecfdf5; color: #047857; }
-    .bg-gradient-yellow .metric-icon { background: #fffbeb; color: #a16207; }
-    .bg-gradient-red .metric-icon { background: #fff1f2; color: #be123c; }
-    .metric-label { font-size: 0.875rem; font-weight: 500; margin-bottom: 12px; }
-    .metric-value { font-size: 2.5rem; font-weight: 700; margin-top: auto; }
-    .surface-card { border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px; background: #fff; }
-    .completion-number { font-size: 3rem; font-weight: 700; color: #047857; }
-    .completion-track { height: 8px; background: #eef2f6; border-radius: 20px; overflow: hidden; }
-    .completion-fill { height: 100%; width: 0; border-radius: inherit; background: #059669; transition: width 250ms ease; }
-    .breakdown-labels { display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 8px; }
-    .breakdown-row .progress { height: 6px; background: #f1f5f9; border-radius: 20px; }
+    /* ===== Dashboard สรุปงาน (Modern Clean ขาว-น้ำเงินเข้ม) ===== */
+    #publicDashboard {
+      --db-navy: #0b2a55; --db-navy-soft: #9db7dc; --db-ink: #14263a; --db-sub: #5b6b7d;
+      --db-track: #e6ecf5; --db-rule: #e2e8f0; --db-wait: #7fa8e0; --db-fail: #f0a6a0;
+      font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif;
+      color: var(--db-ink);
+      font-variant-numeric: tabular-nums;
+    }
+    #publicDashboard .db-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 20px; }
+    #publicDashboard .db-title { font-size: 1.5rem; font-weight: 600; margin: 0; color: var(--db-navy); }
+    #publicDashboard .db-scope { color: var(--db-sub); font-size: 1rem; margin-top: 2px; }
+
+    #publicDashboard .db-panel { background: var(--db-navy); color: #fff; border-radius: 20px; padding: 36px 40px 32px; }
+    #publicDashboard .db-panel-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+    #publicDashboard .db-total { font-size: clamp(4.5rem, 11vw, 7.5rem); font-weight: 600; line-height: 0.95; letter-spacing: -0.03em; }
+    #publicDashboard .db-total-label { font-size: 1.15rem; font-weight: 500; margin-top: 10px; opacity: 0.85; }
+    #publicDashboard .db-rate { text-align: right; }
+    #publicDashboard .db-rate-num { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 600; line-height: 1; }
+    #publicDashboard .db-rate-num small { font-size: 0.5em; font-weight: 500; margin-left: 2px; }
+    #publicDashboard .db-rate-caption { font-size: 1rem; margin-top: 8px; opacity: 0.85; }
+
+    #publicDashboard .db-progress { display: flex; height: 14px; margin-top: 32px; border-radius: 7px; overflow: hidden; background: rgba(255,255,255,0.14); }
+    #publicDashboard .db-progress span { height: 100%; transition: width 250ms ease; }
+    #publicDashboard .db-progress .done { background: #fff; }
+    #publicDashboard .db-progress .wait { background: var(--db-wait); }
+    #publicDashboard .db-progress .fail { background: var(--db-fail); }
+
+    #publicDashboard .db-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0 0; padding: 20px 0 0; list-style: none; border-top: 1px solid rgba(255,255,255,0.2); }
+    #publicDashboard .db-stat-num { font-size: clamp(1.9rem, 4vw, 2.75rem); font-weight: 600; line-height: 1.1; }
+    #publicDashboard .db-stat-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-top: 4px; opacity: 0.9; }
+    #publicDashboard .db-sw { width: 12px; height: 12px; border-radius: 3px; background: #fff; flex: none; }
+    #publicDashboard .db-sw.wait { background: var(--db-wait); }
+    #publicDashboard .db-sw.fail { background: var(--db-fail); }
+
+    #publicDashboard .db-types { margin-top: 36px; }
+    #publicDashboard .db-types h6 { font-size: 1.15rem; font-weight: 600; color: var(--db-navy); margin: 0 0 4px; }
+    #publicDashboard .db-note { font-size: 0.9rem; color: var(--db-sub); margin-bottom: 14px; }
+    #publicDashboard .db-row { display: grid; grid-template-columns: minmax(8rem, 13rem) 1fr 6.5rem; align-items: center; gap: 16px; padding: 10px 0; font-size: 1.05rem; border-top: 1px solid var(--db-rule); }
+    #publicDashboard .db-row:first-child { border-top: 0; }
+    #publicDashboard .db-row-label { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #publicDashboard .db-row-count { text-align: right; color: var(--db-sub); font-size: 0.95rem; }
+    #publicDashboard .db-row-count strong { color: var(--db-navy); font-size: 1.15rem; font-weight: 600; }
+    #publicDashboard .db-bar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: var(--db-track); }
+    #publicDashboard .db-bar .done { background: var(--db-navy); }
+    #publicDashboard .db-bar .rest { background: var(--db-navy-soft); }
+    #publicDashboard .db-bar span { height: 100%; transition: width 250ms ease; }
+    #publicDashboard .db-empty { padding: 8px 0; color: var(--db-sub); }
+
+    @media screen and (max-width: 767.98px) {
+      #publicDashboard .db-head { flex-direction: column; align-items: flex-start; }
+      #publicDashboard .db-panel { padding: 24px 20px; border-radius: 16px; }
+      #publicDashboard .db-rate { text-align: left; }
+      #publicDashboard .db-stats { gap: 8px; }
+      #publicDashboard .db-row { grid-template-columns: minmax(5.5rem, 8rem) 1fr 4.5rem; gap: 10px; font-size: 0.95rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #publicDashboard .db-progress span, #publicDashboard .db-bar span { transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -394,39 +438,38 @@
 
       <!-- ================= 📊 สถิติภาพรวม ================= -->
       <div id="publicDashboard">
-        <div class="d-flex justify-content-between mb-3">
-          <h5 class="fw-bold text-slate-800 m-0"><i class="fa-solid fa-chart-pie text-primary me-2"></i>ภาพรวมสถิติงานซ่อมตามเดือนที่เลือก</h5>
+        <div class="db-head">
+          <div>
+            <h5 class="db-title">สรุปงานซ่อม</h5>
+            <div class="db-scope" id="dashScope">—</div>
+          </div>
           <button type="button" class="btn btn-sm btn-light-custom" onclick="loadAdminData()"><i class="fa-solid fa-rotate-right me-1"></i> ดึงข้อมูลล่าสุด</button>
         </div>
-        <div class="row metrics-grid g-3 mb-4">
-          <div class="col-6 col-md-3"><div class="metric-card bg-gradient-blue"><div class="metric-icon"><i class="fa-solid fa-list-check"></i></div><div class="metric-label">งานทั้งหมด</div><div class="metric-value" id="dashTotalCount">—</div></div></div>
-          <div class="col-6 col-md-3"><div class="metric-card bg-gradient-green"><div class="metric-icon"><i class="fa-solid fa-check"></i></div><div class="metric-label">ซ่อมเสร็จแล้ว</div><div class="metric-value" id="dashDoneCount">—</div></div></div>
-          <div class="col-6 col-md-3"><div class="metric-card bg-gradient-yellow"><div class="metric-icon"><i class="fa-regular fa-clock"></i></div><div class="metric-label">รอ / กำลังทำ</div><div class="metric-value" id="dashPendingCount">—</div></div></div>
-          <div class="col-6 col-md-3"><div class="metric-card bg-gradient-red"><div class="metric-icon"><i class="fa-solid fa-exclamation"></i></div><div class="metric-label">ดำเนินการไม่ได้</div><div class="metric-value" id="dashFailedCount">—</div></div></div>
-        </div>
-        <div class="row g-3">
-          <div class="col-md-5">
-            <section class="surface-card h-100">
-              <h6 class="fw-bold">ความคืบหน้ารวม</h6>
-              <div class="completion-number mt-2"><span id="completionRate">—</span><small>%</small></div>
-              <p class="text-muted small" id="completionCaption">แสดงผลเมื่อโหลดข้อมูลแล้ว</p>
-              <div class="completion-track mt-3"><div class="completion-fill" id="completionFill"></div></div>
-            </section>
+
+        <section class="db-panel" aria-label="สรุปภาพรวมงานซ่อม">
+          <div class="db-panel-top">
+            <div>
+              <div class="db-total" id="dashTotalCount">—</div>
+              <div class="db-total-label">งานทั้งหมด</div>
+            </div>
+            <div class="db-rate">
+              <div class="db-rate-num"><span id="completionRate">—</span><small>%</small></div>
+              <div class="db-rate-caption" id="completionCaption">แสดงผลเมื่อโหลดข้อมูลแล้ว</div>
+            </div>
           </div>
-          <div class="col-md-7">
-            <section class="surface-card h-100">
-              <h6 class="fw-bold mb-3">สัดส่วนตามประเภทงาน</h6>
-              <div class="row align-items-center">
-                <div class="col-5" id="repairChartPanel" hidden>
-                  <canvas id="repairTypeChart"></canvas>
-                </div>
-                <div class="col-7" id="repairTypeBreakdown">
-                  <div id="typeProgressList"></div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
+          <div class="db-progress" id="dashProgress" role="img" aria-label="สัดส่วนสถานะงานซ่อม"></div>
+          <ul class="db-stats">
+            <li><div class="db-stat-num" id="dashDoneCount">—</div><div class="db-stat-label"><span class="db-sw"></span>เสร็จแล้ว</div></li>
+            <li><div class="db-stat-num" id="dashPendingCount">—</div><div class="db-stat-label"><span class="db-sw wait"></span>รอ / กำลังทำ</div></li>
+            <li><div class="db-stat-num" id="dashFailedCount">—</div><div class="db-stat-label"><span class="db-sw fail"></span>ดำเนินการไม่ได้</div></li>
+          </ul>
+        </section>
+
+        <section class="db-types">
+          <h6>งานแยกตามประเภท</h6>
+          <div class="db-note">แท่งเข้มคืองานที่เสร็จแล้ว แท่งอ่อนคืองานที่ยังไม่เสร็จ</div>
+          <div id="dashTypeList"></div>
+        </section>
       </div>
 
     </div>
@@ -1040,77 +1083,91 @@
       });
   }
 
-  function updatePublicDashboard(jobsData) {
-    const selectedMonth = document.getElementById('adminMonthFilter') ? document.getElementById('adminMonthFilter').value : 'all';
+  // ===================== DASHBOARD สรุปงาน =====================
+  const DB_TYPE_ALIASES = { 'งานไฟฟ้า': 'ไฟฟ้า', 'งานเครื่องปรับอากาศ': 'เครื่องปรับอากาศ', 'งานประปา/ห้องน้ำ': 'ประปา', 'งานอาคาร/อาคารสถานที่': 'อาคารและสถานที่' };
+  const DB_TYPE_NAMES = ['ไฟฟ้า', 'เครื่องปรับอากาศ', 'ประปา', 'อาคารและสถานที่', 'อื่นๆ'];
 
-    const activeJobs = jobsData.filter(job => {
-      if (job.status === 'ยกเลิก') return false;
-      if (selectedMonth !== 'all') {
-        const parsed = parseJobMonthYear(job.timestamp);
-        return parsed && (parsed.key === selectedMonth);
-      }
-      return true;
-    });
+  function dbEsc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function dbNum(n) { return Number(n).toLocaleString('th-TH'); }
 
-    const totalCount = activeJobs.length;
-    let doneCount = 0, pendingCount = 0, failedCount = 0;
-    const typeCounts = { 'ไฟฟ้า': 0, 'เครื่องปรับอากาศ': 0, 'ประปา': 0, 'อาคารและสถานที่': 0, 'อื่นๆ': 0 };
-    const typeAliases = { 'งานไฟฟ้า': 'ไฟฟ้า', 'งานเครื่องปรับอากาศ': 'เครื่องปรับอากาศ', 'งานประปา/ห้องน้ำ': 'ประปา', 'งานอาคาร/อาคารสถานที่': 'อาคารและสถานที่' };
+  // done | fail | wait
+  function dbStatusKey(status) {
+    if (status === 'ดำเนินการแล้วเสร็จ') return 'done';
+    if (status === 'ไม่สามารถดำเนินการได้') return 'fail';
+    return 'wait';
+  }
 
+  function dbRenderProgress(done, wait, fail) {
+    const el = document.getElementById('dashProgress');
+    if (!el) return;
+    const total = done + wait + fail;
+    el.setAttribute('aria-label', `เสร็จแล้ว ${done} งาน รอหรือกำลังทำ ${wait} งาน ดำเนินการไม่ได้ ${fail} งาน จากทั้งหมด ${total} งาน`);
+    if (total === 0) { el.innerHTML = ''; return; }
+    const seg = (k, n) => n > 0 ? `<span class="${k}" style="width:${(n / total) * 100}%"></span>` : '';
+    el.innerHTML = seg('done', done) + seg('wait', wait) + seg('fail', fail);
+  }
+
+  function dbRenderTypes(activeJobs) {
+    const el = document.getElementById('dashTypeList');
+    if (!el) return;
+    const stats = {};
+    DB_TYPE_NAMES.forEach(n => { stats[n] = { done: 0, total: 0 }; });
     activeJobs.forEach(job => {
-      if (job.status === 'ดำเนินการแล้วเสร็จ') doneCount++;
-      else if (job.status === 'ไม่สามารถดำเนินการได้') failedCount++;
-      else pendingCount++;
+      let t = DB_TYPE_ALIASES[job.repairType] || job.repairType || 'อื่นๆ';
+      if (!stats[t]) t = 'อื่นๆ';
+      stats[t].total++;
+      if (dbStatusKey(job.status) === 'done') stats[t].done++;
+    });
+    const rows = DB_TYPE_NAMES.map(n => Object.assign({ name: n }, stats[n])).filter(r => r.total > 0).sort((a, b) => b.total - a.total);
+    if (rows.length === 0) { el.innerHTML = '<div class="db-empty">ยังไม่มีงานในช่วงที่เลือก</div>'; return; }
+    const max = rows[0].total;
+    el.innerHTML = rows.map(r => {
+      const rest = r.total - r.done;
+      const tip = `${r.name}: เสร็จแล้ว ${r.done} จาก ${r.total} งาน`;
+      return `<div class="db-row">
+        <div class="db-row-label">${dbEsc(r.name)}</div>
+        <div class="db-bar" role="img" aria-label="${dbEsc(tip)}">
+          ${r.done > 0 ? `<span class="done" style="width:${(r.done / max) * 100}%"></span>` : ''}
+          ${rest > 0 ? `<span class="rest" style="width:${(rest / max) * 100}%"></span>` : ''}
+        </div>
+        <div class="db-row-count"><strong>${dbNum(r.total)}</strong> งาน</div>
+      </div>`;
+    }).join('');
+  }
 
-      const type = typeAliases[job.repairType] || job.repairType || 'อื่นๆ';
-      if (typeCounts.hasOwnProperty(type)) typeCounts[type]++; else typeCounts['อื่นๆ']++;
+  function updatePublicDashboard(jobsData) {
+    const monthEl = document.getElementById('adminMonthFilter');
+    const selectedMonth = monthEl ? monthEl.value : 'all';
+
+    const activeJobs = (jobsData || []).filter(job => {
+      if (job.status === 'ยกเลิก') return false;
+      if (selectedMonth === 'all') return true;
+      const parsed = parseJobMonthYear(job.timestamp);
+      return parsed && (parsed.key === selectedMonth);
     });
 
-    document.getElementById('dashTotalCount').innerText = totalCount.toLocaleString('th-TH');
-    document.getElementById('dashDoneCount').innerText = doneCount.toLocaleString('th-TH');
-    document.getElementById('dashPendingCount').innerText = pendingCount.toLocaleString('th-TH');
-    document.getElementById('dashFailedCount').innerText = failedCount.toLocaleString('th-TH');
-    const completionRate = totalCount > 0 ? (doneCount / totalCount) * 100 : 0;
-    document.getElementById('completionRate').textContent = completionRate.toFixed(0);
-    
-    document.getElementById('completionFill').style.width = `${completionRate}%`;
+    let done = 0, wait = 0, fail = 0;
+    activeJobs.forEach(job => { const k = dbStatusKey(job.status); if (k === 'done') done++; else if (k === 'fail') fail++; else wait++; });
+    const total = activeJobs.length;
+    const rate = total > 0 ? Math.round((done / total) * 100) : 0;
 
-    const typeListContainer = document.getElementById('typeProgressList');
-    if (typeListContainer) {
-      typeListContainer.innerHTML = '';
-      const colorMap = { 'ไฟฟ้า': '#f59e0b', 'เครื่องปรับอากาศ': '#8b5cf6', 'ประปา': '#10b981', 'อาคารและสถานที่': '#3b82f6', 'อื่นๆ': '#64748b' };
-      Object.keys(typeCounts).forEach(type => {
-        const count = typeCounts[type];
-        const percent = totalCount > 0 ? ((count / totalCount) * 100).toFixed(1) : 0;
-        const color = colorMap[type] || '#64748b';
-        typeListContainer.innerHTML += `
-          <div class="breakdown-row mb-3">
-            <div class="breakdown-labels">
-              <span class="breakdown-type fw-bold text-slate-700" style="color: ${color};"><i class="fa-solid fa-circle me-1" style="font-size:8px;"></i>${type}</span>
-              <span class="breakdown-count text-muted">${count} งาน <span class="breakdown-percent">(${percent}%)</span></span>
-            </div>
-            <div class="progress" style="height: 6px;">
-              <div class="progress-bar" style="width: ${percent}%; background-color: ${color};"></div>
-            </div>
-          </div>
-        `;
-      });
+    const scope = document.getElementById('dashScope');
+    if (scope) {
+      const opt = monthEl && monthEl.options[monthEl.selectedIndex];
+      scope.textContent = (selectedMonth === 'all' || !opt) ? 'ทุกเดือน' : opt.text;
     }
 
-    const ctx = document.getElementById('repairTypeChart');
-    if (ctx && typeof Chart !== 'undefined') {
-      document.getElementById('repairChartPanel').hidden = false;
-      document.getElementById('repairTypeBreakdown').className = 'col-7';
-      if (repairChartInstance) repairChartInstance.destroy();
-      repairChartInstance = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(typeCounts),
-          datasets: [{ data: Object.values(typeCounts), backgroundColor: ['#f59e0b', '#8b5cf6', '#10b981', '#3b82f6', '#64748b'], borderWidth: 0 }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false } }, cutout: '75%' }
-      });
-    }
+    document.getElementById('dashTotalCount').textContent = dbNum(total);
+    document.getElementById('dashDoneCount').textContent = dbNum(done);
+    document.getElementById('dashPendingCount').textContent = dbNum(wait);
+    document.getElementById('dashFailedCount').textContent = dbNum(fail);
+    document.getElementById('completionRate').textContent = rate;
+    document.getElementById('completionCaption').textContent = total > 0 ? `เสร็จแล้ว ${dbNum(done)} จาก ${dbNum(total)} งาน` : 'ยังไม่มีงานในช่วงที่เลือก';
+
+    dbRenderProgress(done, wait, fail);
+    dbRenderTypes(activeJobs);
   }
 
   // ==========================================
