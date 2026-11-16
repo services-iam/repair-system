@@ -9,7 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -91,63 +91,69 @@
       .jobs-table tbody td.cell-editor { display: block; }
       .jobs-table td.cell-editor::before { display: block; margin-bottom: 6px; }
     }
-    /* ===== Dashboard สรุปงาน (Modern Clean ขาว-น้ำเงินเข้ม) ===== */
-    #publicDashboard {
-      --db-navy: #0b2a55; --db-navy-soft: #9db7dc; --db-ink: #14263a; --db-sub: #5b6b7d;
-      --db-track: #e6ecf5; --db-rule: #e2e8f0; --db-wait: #7fa8e0; --db-fail: #f0a6a0;
-      font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif;
-      color: var(--db-ink);
-      font-variant-numeric: tabular-nums;
-    }
-    #publicDashboard .db-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 20px; }
-    #publicDashboard .db-title { font-size: 1.5rem; font-weight: 600; margin: 0; color: var(--db-navy); }
-    #publicDashboard .db-scope { color: var(--db-sub); font-size: 1rem; margin-top: 2px; }
+    /* ===== Dashboard: ปริมาณงานสายงานช่างโยธา ===== */
+    #publicDashboard.mr-wrap { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 20px; color: #1e293b; font-family: 'Noto Sans Thai', 'Sarabun', sans-serif; }
+    #publicDashboard .mr-num { font-family: 'Inter', 'Noto Sans Thai', sans-serif; font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+    #publicDashboard .mr-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+    #publicDashboard .mr-title { font-size: 1.35rem; font-weight: 700; color: #0f172a; margin: 0; }
+    #publicDashboard .mr-sub { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
+    #publicDashboard .mr-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    #publicDashboard .mr-month { display: flex; align-items: center; gap: 8px; margin: 0; color: #94a3b8; }
+    #publicDashboard .mr-month select { min-width: 11rem; border-radius: 8px; border: 1px solid #E2E8F0; font-weight: 500; color: #1e293b; }
+    #publicDashboard .mr-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+    #publicDashboard .mr-btn:hover { border-color: #cbd5e1; color: #0f172a; }
+    #publicDashboard .mr-btn.dashed { background: transparent; border-style: dashed; border-color: #cbd5e1; color: #64748b; }
+    #publicDashboard .mr-btn:focus-visible, #publicDashboard .mr-pill:focus-visible, #publicDashboard .mr-month select:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
 
-    #publicDashboard .db-panel { background: var(--db-navy); color: #fff; border-radius: 20px; padding: 36px 40px 32px; }
-    #publicDashboard .db-panel-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
-    #publicDashboard .db-total { font-size: clamp(4.5rem, 11vw, 7.5rem); font-weight: 600; line-height: 0.95; letter-spacing: -0.03em; }
-    #publicDashboard .db-total-label { font-size: 1.15rem; font-weight: 500; margin-top: 10px; opacity: 0.85; }
-    #publicDashboard .db-rate { text-align: right; }
-    #publicDashboard .db-rate-num { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 600; line-height: 1; }
-    #publicDashboard .db-rate-num small { font-size: 0.5em; font-weight: 500; margin-left: 2px; }
-    #publicDashboard .db-rate-caption { font-size: 1rem; margin-top: 8px; opacity: 0.85; }
+    #publicDashboard .mr-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    #publicDashboard .mr-pill { font-size: 0.85rem; color: #475569; background: #fff; border: 1px solid #E2E8F0; border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+    #publicDashboard .mr-pill:hover { border-color: #cbd5e1; color: #0f172a; }
+    #publicDashboard .mr-pill.active { background: #0f172a; border-color: #0f172a; color: #fff; font-weight: 500; }
+    #publicDashboard .mr-scope { font-size: 0.85rem; color: #64748b; margin: 10px 0 0; min-height: 1.3em; }
 
-    #publicDashboard .db-progress { display: flex; height: 14px; margin-top: 32px; border-radius: 7px; overflow: hidden; background: rgba(255,255,255,0.14); }
-    #publicDashboard .db-progress span { height: 100%; transition: width 250ms ease; }
-    #publicDashboard .db-progress .done { background: #fff; }
-    #publicDashboard .db-progress .wait { background: var(--db-wait); }
-    #publicDashboard .db-progress .fail { background: var(--db-fail); }
+    #publicDashboard .mr-card { position: relative; overflow: hidden; background: #fff; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; height: 100%; }
+    #publicDashboard .mr-card.hero::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #2563EB; }
+    #publicDashboard .mr-card-label { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 500; color: #475569; margin: 0; }
+    #publicDashboard .mr-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+    #publicDashboard .mr-big { font-size: clamp(2.5rem, 5vw, 3.25rem); font-weight: 700; line-height: 1; color: #0f172a; margin-top: 14px; }
+    #publicDashboard .mr-mid { font-size: 1.9rem; font-weight: 700; line-height: 1; color: #0f172a; }
+    #publicDashboard .mr-kpi-row { display: flex; align-items: baseline; gap: 8px; margin-top: 14px; }
+    #publicDashboard .mr-pct { font-size: 0.9rem; font-weight: 600; }
+    #publicDashboard .mr-hint { font-size: 0.8rem; color: #64748b; margin-top: 8px; }
+    #publicDashboard .mr-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 500; color: #1d4ed8; background: #eff6ff; border-radius: 999px; padding: 4px 10px; }
+    #publicDashboard .mr-track { height: 6px; border-radius: 3px; background: #f1f5f9; overflow: hidden; margin-top: 14px; }
+    #publicDashboard .mr-fill { height: 100%; border-radius: 3px; transition: width 300ms ease; }
 
-    #publicDashboard .db-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0 0; padding: 20px 0 0; list-style: none; border-top: 1px solid rgba(255,255,255,0.2); }
-    #publicDashboard .db-stat-num { font-size: clamp(1.9rem, 4vw, 2.75rem); font-weight: 600; line-height: 1.1; }
-    #publicDashboard .db-stat-label { display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-top: 4px; opacity: 0.9; }
-    #publicDashboard .db-sw { width: 12px; height: 12px; border-radius: 3px; background: #fff; flex: none; }
-    #publicDashboard .db-sw.wait { background: var(--db-wait); }
-    #publicDashboard .db-sw.fail { background: var(--db-fail); }
+    #publicDashboard .mr-card-title { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+    #publicDashboard .mr-card-note { font-size: 0.78rem; color: #64748b; margin: 2px 0 14px; }
+    #publicDashboard .mr-chart { position: relative; height: 320px; }
 
-    #publicDashboard .db-types { margin-top: 36px; }
-    #publicDashboard .db-types h6 { font-size: 1.15rem; font-weight: 600; color: var(--db-navy); margin: 0 0 4px; }
-    #publicDashboard .db-note { font-size: 0.9rem; color: var(--db-sub); margin-bottom: 14px; }
-    #publicDashboard .db-row { display: grid; grid-template-columns: minmax(8rem, 13rem) 1fr 6.5rem; align-items: center; gap: 16px; padding: 10px 0; font-size: 1.05rem; border-top: 1px solid var(--db-rule); }
-    #publicDashboard .db-row:first-child { border-top: 0; }
-    #publicDashboard .db-row-label { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #publicDashboard .db-row-count { text-align: right; color: var(--db-sub); font-size: 0.95rem; }
-    #publicDashboard .db-row-count strong { color: var(--db-navy); font-size: 1.15rem; font-weight: 600; }
-    #publicDashboard .db-bar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: var(--db-track); }
-    #publicDashboard .db-bar .done { background: var(--db-navy); }
-    #publicDashboard .db-bar .rest { background: var(--db-navy-soft); }
-    #publicDashboard .db-bar span { height: 100%; transition: width 250ms ease; }
-    #publicDashboard .db-empty { padding: 8px 0; color: var(--db-sub); }
+    #publicDashboard .mr-table { width: 100%; min-width: 40rem; border-collapse: collapse; font-size: 0.9rem; }
+    #publicDashboard .mr-table th, #publicDashboard .mr-table td { padding: 12px; }
+    #publicDashboard .mr-table thead th { color: #64748b; font-weight: 500; text-align: right; white-space: nowrap; border-bottom: 1px solid #E2E8F0; padding-top: 10px; padding-bottom: 10px; }
+    #publicDashboard .mr-table thead th:first-child { text-align: left; padding-left: 0; }
+    #publicDashboard .mr-table thead th:last-child { text-align: left; width: 12rem; }
+    #publicDashboard .mr-table tbody tr { border-bottom: 1px solid #EEF2F6; }
+    #publicDashboard .mr-table tbody th { text-align: left; font-weight: 500; color: #1e293b; padding-left: 0; font-family: 'Noto Sans Thai', 'Sarabun', sans-serif; }
+    #publicDashboard .mr-table td { text-align: right; }
+    #publicDashboard .mr-table td.sum { font-weight: 600; color: #0f172a; }
+    #publicDashboard .mr-table td.rate { text-align: left; }
+    #publicDashboard .mr-table tr.sel { background: rgba(239, 246, 255, 0.7); }
+    #publicDashboard .mr-table tr.dim { opacity: 0.4; }
+    #publicDashboard .mr-table tr.total { background: #f8fafc; border-top: 2px solid #cbd5e1; border-bottom: 0; font-weight: 700; color: #0f172a; }
+    #publicDashboard .mr-table tr.total th { padding-left: 8px; font-weight: 700; }
+    #publicDashboard .mr-rate { display: flex; align-items: center; gap: 8px; }
+    #publicDashboard .mr-rate .bar { flex: 1; height: 8px; border-radius: 4px; background: #f1f5f9; overflow: hidden; }
+    #publicDashboard .mr-rate .bar span { display: block; height: 100%; border-radius: 4px; background: #10B981; transition: width 300ms ease; }
+    #publicDashboard .mr-rate .val { width: 3.2rem; text-align: right; font-weight: 600; color: #334155; }
+    #publicDashboard .mr-legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
 
     @media screen and (max-width: 767.98px) {
-      #publicDashboard .db-head { flex-direction: column; align-items: flex-start; }
-      #publicDashboard .db-panel { padding: 24px 20px; border-radius: 16px; }
-      #publicDashboard .db-rate { text-align: left; }
-      #publicDashboard .db-stats { gap: 8px; }
-      #publicDashboard .db-row { grid-template-columns: minmax(5.5rem, 8rem) 1fr 4.5rem; gap: 10px; font-size: 0.95rem; }
+      #publicDashboard.mr-wrap { padding: 14px; border-radius: 12px; }
+      #publicDashboard .mr-chart { height: 280px; }
     }
     @media (prefers-reduced-motion: reduce) {
-      #publicDashboard .db-progress span, #publicDashboard .db-bar span { transition: none; }
+      #publicDashboard .mr-fill, #publicDashboard .mr-rate .bar span { transition: none; }
     }
   </style>
 </head>
@@ -436,40 +442,109 @@
         </div>
       </div>
 
-      <!-- ================= 📊 สถิติภาพรวม ================= -->
-      <div id="publicDashboard">
-        <div class="db-head">
+      <!-- ================= 📊 ปริมาณงานสายงานช่างโยธา ================= -->
+      <div id="publicDashboard" class="mr-wrap">
+
+        <div class="mr-header">
           <div>
-            <h5 class="db-title">สรุปงานซ่อม</h5>
-            <div class="db-scope" id="dashScope">—</div>
+            <h5 class="mr-title">ปริมาณงานสายงานช่างโยธา</h5>
+            <div class="mr-sub" id="mrSub">กำลังโหลดข้อมูล...</div>
           </div>
-          <button type="button" class="btn btn-sm btn-light-custom" onclick="loadAdminData()"><i class="fa-solid fa-rotate-right me-1"></i> ดึงข้อมูลล่าสุด</button>
+          <div class="mr-actions">
+            <label class="mr-month">
+              <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+              <span class="visually-hidden">เดือน</span>
+              <select id="mrMonthSelect" class="form-select form-select-sm" aria-label="เลือกเดือนที่ต้องการแสดง"></select>
+            </label>
+            <button type="button" class="mr-btn" onclick="loadAdminData()"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i> ดึงข้อมูลล่าสุด</button>
+            <button type="button" class="mr-btn dashed" id="mrExportBtn"><i class="fa-solid fa-download" aria-hidden="true"></i> ดาวน์โหลด CSV</button>
+          </div>
         </div>
 
-        <section class="db-panel" aria-label="สรุปภาพรวมงานซ่อม">
-          <div class="db-panel-top">
-            <div>
-              <div class="db-total" id="dashTotalCount">—</div>
-              <div class="db-total-label">งานทั้งหมด</div>
-            </div>
-            <div class="db-rate">
-              <div class="db-rate-num"><span id="completionRate">—</span><small>%</small></div>
-              <div class="db-rate-caption" id="completionCaption">แสดงผลเมื่อโหลดข้อมูลแล้ว</div>
+        <div class="mb-3" role="group" aria-label="กรองตามประเภทงาน">
+          <div class="mr-pills" id="mrPillBar"></div>
+          <p class="mr-scope" id="mrScopeNote" aria-live="polite"></p>
+        </div>
+
+        <!-- Row 1: KPI -->
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="mr-card hero">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <p class="mr-card-label">ยอดงานทั้งหมด</p>
+                <span class="mr-badge" id="mrKpiBadge"></span>
+              </div>
+              <div class="mr-num mr-big" id="mrKpiTotal">0</div>
+              <div class="mr-hint" id="mrKpiSub">งาน</div>
             </div>
           </div>
-          <div class="db-progress" id="dashProgress" role="img" aria-label="สัดส่วนสถานะงานซ่อม"></div>
-          <ul class="db-stats">
-            <li><div class="db-stat-num" id="dashDoneCount">—</div><div class="db-stat-label"><span class="db-sw"></span>เสร็จแล้ว</div></li>
-            <li><div class="db-stat-num" id="dashPendingCount">—</div><div class="db-stat-label"><span class="db-sw wait"></span>รอ / กำลังทำ</div></li>
-            <li><div class="db-stat-num" id="dashFailedCount">—</div><div class="db-stat-label"><span class="db-sw fail"></span>ดำเนินการไม่ได้</div></li>
-          </ul>
-        </section>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="mr-card">
+              <p class="mr-card-label"><span class="mr-dot" style="background:#10B981"></span>ดำเนินการแล้วเสร็จ</p>
+              <div class="mr-kpi-row"><span class="mr-num mr-mid" id="mrKpiDone">0</span><span class="mr-num mr-pct" style="color:#059669" id="mrKpiDonePct">0.0%</span></div>
+              <div class="mr-track"><div class="mr-fill" id="mrKpiDoneBar" style="width:0%;background:#10B981"></div></div>
+              <div class="mr-hint">ของงานทั้งหมด</div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="mr-card">
+              <p class="mr-card-label"><span class="mr-dot" style="background:#F59E0B"></span>รอดำเนินการ</p>
+              <div class="mr-kpi-row"><span class="mr-num mr-mid" id="mrKpiPending">0</span><span class="mr-num mr-pct" style="color:#d97706" id="mrKpiPendingPct">0.0%</span></div>
+              <div class="mr-track"><div class="mr-fill" id="mrKpiPendingBar" style="width:0%;background:#F59E0B"></div></div>
+              <div class="mr-hint">ของงานทั้งหมด (รวมงานที่กำลังดำเนินการ)</div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="mr-card">
+              <p class="mr-card-label"><span class="mr-dot" style="background:#EF4444"></span>ดำเนินการไม่ได้</p>
+              <div class="mr-kpi-row"><span class="mr-num mr-mid" id="mrKpiFailed">0</span><span class="mr-num mr-pct" style="color:#e11d48" id="mrKpiFailedPct">0.0%</span></div>
+              <div class="mr-track"><div class="mr-fill" id="mrKpiFailedBar" style="width:0%;background:#EF4444"></div></div>
+              <div class="mr-hint">ของงานทั้งหมด</div>
+            </div>
+          </div>
+        </div>
 
-        <section class="db-types">
-          <h6>งานแยกตามประเภท</h6>
-          <div class="db-note">แท่งเข้มคืองานที่เสร็จแล้ว แท่งอ่อนคืองานที่ยังไม่เสร็จ</div>
-          <div id="dashTypeList"></div>
-        </section>
+        <!-- Row 2: Charts -->
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-lg-8">
+            <div class="mr-card">
+              <h6 class="mr-card-title">งานแยกตามประเภทและสถานะ</h6>
+              <p class="mr-card-note">คลิกแท่งเพื่อเลือกประเภท คลิกซ้ำเพื่อยกเลิก</p>
+              <div class="mr-chart"><canvas id="mrStacked" role="img" aria-label="กราฟแท่งซ้อนแสดงจำนวนงานแต่ละประเภทแยกตามสถานะ รายละเอียดอยู่ในตารางด้านล่าง"></canvas></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="mr-card">
+              <h6 class="mr-card-title">อันดับประเภทงาน</h6>
+              <p class="mr-card-note">เรียงจากมากไปน้อย (จำนวนงานทั้งหมด)</p>
+              <div class="mr-chart"><canvas id="mrRank" role="img" aria-label="กราฟแท่งแนวนอนแสดงอันดับประเภทงานตามจำนวนงานทั้งหมด รายละเอียดอยู่ในตารางด้านล่าง"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Matrix -->
+        <div class="mr-card">
+          <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-3">
+            <h6 class="mr-card-title">ตารางสรุปรายละเอียด</h6>
+            <span class="small text-muted" id="mrTableMonth"></span>
+          </div>
+          <div class="table-responsive">
+            <table class="mr-table">
+              <thead>
+                <tr>
+                  <th scope="col">ประเภทงาน</th>
+                  <th scope="col"><span class="mr-legend-dot" style="background:#10B981"></span>ดำเนินการแล้วเสร็จ</th>
+                  <th scope="col"><span class="mr-legend-dot" style="background:#F59E0B"></span>รอดำเนินการ</th>
+                  <th scope="col"><span class="mr-legend-dot" style="background:#EF4444"></span>ดำเนินการไม่ได้</th>
+                  <th scope="col">รวมงานทั้งหมด</th>
+                  <th scope="col">% ความสำเร็จ</th>
+                </tr>
+              </thead>
+              <tbody id="mrMatrixBody" class="mr-num"></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -1083,91 +1158,315 @@
       });
   }
 
-  // ===================== DASHBOARD สรุปงาน =====================
-  const DB_TYPE_ALIASES = { 'งานไฟฟ้า': 'ไฟฟ้า', 'งานเครื่องปรับอากาศ': 'เครื่องปรับอากาศ', 'งานประปา/ห้องน้ำ': 'ประปา', 'งานอาคาร/อาคารสถานที่': 'อาคารและสถานที่' };
-  const DB_TYPE_NAMES = ['ไฟฟ้า', 'เครื่องปรับอากาศ', 'ประปา', 'อาคารและสถานที่', 'อื่นๆ'];
+  // ===================== DASHBOARD: ปริมาณงานสายงานช่างโยธา =====================
+  // ใช้ข้อมูลจริงจากรายการแจ้งซ่อม (allAdminJobsData) นับตามเดือนที่แจ้ง ประเภทงาน และสถานะ
+  const MR_CATEGORIES = ['งานเครื่องปรับอากาศ', 'งานไฟฟ้า', 'งานประปา', 'งานอาคารสถานที่', 'อื่นๆ'];
+  const MR_SHORT = ['เครื่องปรับอากาศ', 'ไฟฟ้า', 'ประปา', 'อาคารสถานที่', 'อื่นๆ'];
+  const MR_STATUSES = [
+    { key: 'done',    label: 'ดำเนินการแล้วเสร็จ', color: '#10B981' },
+    { key: 'pending', label: 'รอดำเนินการ',        color: '#F59E0B' },
+    { key: 'failed',  label: 'ดำเนินการไม่ได้',     color: '#EF4444' }
+  ];
+  const MR_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+  const MR_RANK_COLOR = '#2563EB';
+  const mr = { month: null, category: null, data: {}, pills: [], monthKeys: '', stacked: null, rank: null, rankOrder: [], wired: false };
 
-  function dbEsc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  function mrEl(id) { return document.getElementById(id); }
+  function mrPad(n) { return n < 10 ? '0' + n : String(n); }
+  function mrFmt1(n) { return n.toFixed(1); }
+  function mrPct(n, d) { return d > 0 ? (n / d) * 100 : 0; }
+
+  // ประเภทงานในฟอร์มแจ้งซ่อม -> 5 หมวดของรายงาน
+  function mrCategoryOf(t) {
+    if (t === 'งานเครื่องปรับอากาศ') return MR_CATEGORIES[0];
+    if (t === 'งานไฟฟ้า') return MR_CATEGORIES[1];
+    if (t === 'งานประปา/ห้องน้ำ' || t === 'งานประปา') return MR_CATEGORIES[2];
+    if (t === 'งานอาคาร/อาคารสถานที่' || t === 'งานอาคารสถานที่') return MR_CATEGORIES[3];
+    return MR_CATEGORIES[4];
   }
-  function dbNum(n) { return Number(n).toLocaleString('th-TH'); }
 
-  // done | fail | wait
-  function dbStatusKey(status) {
+  // สถานะในระบบ -> done | failed | pending (ยกเลิก = ไม่นับ)
+  function mrStatusKey(status) {
+    if (status === 'ยกเลิก') return null;
     if (status === 'ดำเนินการแล้วเสร็จ') return 'done';
-    if (status === 'ไม่สามารถดำเนินการได้') return 'fail';
-    return 'wait';
+    if (status === 'ไม่สามารถดำเนินการได้') return 'failed';
+    return 'pending'; // รอดำเนินการ / กำลังดำเนินการ / ว่าง
   }
 
-  function dbRenderProgress(done, wait, fail) {
-    const el = document.getElementById('dashProgress');
-    if (!el) return;
-    const total = done + wait + fail;
-    el.setAttribute('aria-label', `เสร็จแล้ว ${done} งาน รอหรือกำลังทำ ${wait} งาน ดำเนินการไม่ได้ ${fail} งาน จากทั้งหมด ${total} งาน`);
-    if (total === 0) { el.innerHTML = ''; return; }
-    const seg = (k, n) => n > 0 ? `<span class="${k}" style="width:${(n / total) * 100}%"></span>` : '';
-    el.innerHTML = seg('done', done) + seg('wait', wait) + seg('fail', fail);
+  function mrEmptyMonth() {
+    const m = {};
+    MR_CATEGORIES.forEach(c => { m[c] = { done: 0, pending: 0, failed: 0 }; });
+    return m;
   }
 
-  function dbRenderTypes(activeJobs) {
-    const el = document.getElementById('dashTypeList');
-    if (!el) return;
-    const stats = {};
-    DB_TYPE_NAMES.forEach(n => { stats[n] = { done: 0, total: 0 }; });
-    activeJobs.forEach(job => {
-      let t = DB_TYPE_ALIASES[job.repairType] || job.repairType || 'อื่นๆ';
-      if (!stats[t]) t = 'อื่นๆ';
-      stats[t].total++;
-      if (dbStatusKey(job.status) === 'done') stats[t].done++;
+  function mrBuildData(jobs) {
+    const data = {};
+    (jobs || []).forEach(job => {
+      const sk = mrStatusKey(job.status);
+      if (!sk) return;
+      const p = parseJobMonthYear(job.timestamp);
+      if (!p || !(p.month >= 1 && p.month <= 12) || !(p.year > 1900)) return;
+      const key = p.year + '-' + mrPad(p.month);
+      if (!data[key]) data[key] = mrEmptyMonth();
+      data[key][mrCategoryOf(job.repairType)][sk]++;
     });
-    const rows = DB_TYPE_NAMES.map(n => Object.assign({ name: n }, stats[n])).filter(r => r.total > 0).sort((a, b) => b.total - a.total);
-    if (rows.length === 0) { el.innerHTML = '<div class="db-empty">ยังไม่มีงานในช่วงที่เลือก</div>'; return; }
-    const max = rows[0].total;
-    el.innerHTML = rows.map(r => {
-      const rest = r.total - r.done;
-      const tip = `${r.name}: เสร็จแล้ว ${r.done} จาก ${r.total} งาน`;
-      return `<div class="db-row">
-        <div class="db-row-label">${dbEsc(r.name)}</div>
-        <div class="db-bar" role="img" aria-label="${dbEsc(tip)}">
-          ${r.done > 0 ? `<span class="done" style="width:${(r.done / max) * 100}%"></span>` : ''}
-          ${rest > 0 ? `<span class="rest" style="width:${(rest / max) * 100}%"></span>` : ''}
-        </div>
-        <div class="db-row-count"><strong>${dbNum(r.total)}</strong> งาน</div>
-      </div>`;
-    }).join('');
+    return data;
   }
 
-  function updatePublicDashboard(jobsData) {
-    const monthEl = document.getElementById('adminMonthFilter');
-    const selectedMonth = monthEl ? monthEl.value : 'all';
+  function mrNowKey() { const d = new Date(); return d.getFullYear() + '-' + mrPad(d.getMonth() + 1); }
+  function mrPrevKey(key) {
+    const p = key.split('-'); const y = parseInt(p[0], 10), m = parseInt(p[1], 10);
+    return m === 1 ? (y - 1) + '-12' : y + '-' + mrPad(m - 1);
+  }
+  function mrLabel(key) {
+    const p = key.split('-');
+    return MR_MONTHS[parseInt(p[1], 10) - 1] + ' ' + (parseInt(p[0], 10) + 543);
+  }
 
-    const activeJobs = (jobsData || []).filter(job => {
-      if (job.status === 'ยกเลิก') return false;
-      if (selectedMonth === 'all') return true;
-      const parsed = parseJobMonthYear(job.timestamp);
-      return parsed && (parsed.key === selectedMonth);
+  function mrTotals(key, cat) {
+    const m = mr.data[key] || {};
+    const out = { done: 0, pending: 0, failed: 0, total: 0 };
+    MR_CATEGORIES.forEach(c => {
+      if (cat && c !== cat) return;
+      const r = m[c];
+      if (!r) return;
+      out.done += r.done; out.pending += r.pending; out.failed += r.failed;
     });
+    out.total = out.done + out.pending + out.failed;
+    return out;
+  }
 
-    let done = 0, wait = 0, fail = 0;
-    activeJobs.forEach(job => { const k = dbStatusKey(job.status); if (k === 'done') done++; else if (k === 'fail') fail++; else wait++; });
-    const total = activeJobs.length;
-    const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+  function mrBuildCsv() {
+    const rows = ['เดือน,ประเภทงาน,ดำเนินการแล้วเสร็จ,รอดำเนินการ,ดำเนินการไม่ได้'];
+    Object.keys(mr.data).sort().forEach(k => {
+      if (mrTotals(k).total === 0) return;
+      MR_CATEGORIES.forEach(c => { const r = mr.data[k][c]; rows.push([k, c, r.done, r.pending, r.failed].join(',')); });
+    });
+    return rows.join('\n');
+  }
 
-    const scope = document.getElementById('dashScope');
-    if (scope) {
-      const opt = monthEl && monthEl.options[monthEl.selectedIndex];
-      scope.textContent = (selectedMonth === 'all' || !opt) ? 'ทุกเดือน' : opt.text;
+  function mrExportCsv() {
+    const blob = new Blob(['﻿' + mrBuildCsv()], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'ปริมาณงานสายงานช่างโยธา.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function mrSetCategory(cat) {
+    mr.category = (cat === mr.category) ? null : cat;
+    mrRender();
+  }
+
+  function mrWire() {
+    if (mr.wired) return;
+    const bar = mrEl('mrPillBar'), sel = mrEl('mrMonthSelect'), exp = mrEl('mrExportBtn');
+    if (!bar || !sel) return;
+    [{ label: 'ทั้งหมด', value: null }].concat(MR_CATEGORIES.map(c => ({ label: c, value: c }))).forEach(it => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = it.label;
+      b.addEventListener('click', () => mrSetCategory(it.value));
+      bar.appendChild(b);
+      mr.pills.push({ el: b, value: it.value });
+    });
+    sel.addEventListener('change', e => { mr.month = e.target.value; mrRender(); });
+    if (exp) exp.addEventListener('click', mrExportCsv);
+    mr.wired = true;
+  }
+
+  function mrRenderControls() {
+    const keys = Object.keys(mr.data).sort().reverse();
+    const sig = keys.join('|');
+    const sel = mrEl('mrMonthSelect');
+    if (sig !== mr.monthKeys) {
+      sel.innerHTML = '';
+      keys.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = mrLabel(k); sel.appendChild(o); });
+      mr.monthKeys = sig;
     }
+    sel.value = mr.month;
+    mr.pills.forEach(p => {
+      const active = p.value === mr.category;
+      p.el.className = 'mr-pill' + (active ? ' active' : '');
+      p.el.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    mrEl('mrScopeNote').textContent = mr.category ? 'ตัวเลขสรุปและกราฟกำลังเน้นเฉพาะ ' + mr.category : '';
+    mrEl('mrSub').textContent = 'ข้อมูลจากระบบแจ้งซ่อม ประจำ' + mrLabel(mr.month) + ' (ไม่นับงานที่ยกเลิก)';
+  }
 
-    document.getElementById('dashTotalCount').textContent = dbNum(total);
-    document.getElementById('dashDoneCount').textContent = dbNum(done);
-    document.getElementById('dashPendingCount').textContent = dbNum(wait);
-    document.getElementById('dashFailedCount').textContent = dbNum(fail);
-    document.getElementById('completionRate').textContent = rate;
-    document.getElementById('completionCaption').textContent = total > 0 ? `เสร็จแล้ว ${dbNum(done)} จาก ${dbNum(total)} งาน` : 'ยังไม่มีงานในช่วงที่เลือก';
+  function mrRenderKpis() {
+    const t = mrTotals(mr.month, mr.category);
+    mrEl('mrKpiTotal').textContent = t.total;
+    mrEl('mrKpiSub').textContent = (mr.category ? mr.category : 'ทุกประเภท') + ' · ' + mrLabel(mr.month);
+    [['Done', t.done], ['Pending', t.pending], ['Failed', t.failed]].forEach(p => {
+      const share = mrPct(p[1], t.total);
+      mrEl('mrKpi' + p[0]).textContent = p[1];
+      mrEl('mrKpi' + p[0] + 'Pct').textContent = mrFmt1(share) + '%';
+      mrEl('mrKpi' + p[0] + 'Bar').style.width = share + '%';
+    });
 
-    dbRenderProgress(done, wait, fail);
-    dbRenderTypes(activeJobs);
+    const prev = mrPrevKey(mr.month);
+    const pt = mrTotals(prev, mr.category).total;
+    let icon = 'fa-minus', text = 'ไม่มีข้อมูลเดือนก่อนหน้า';
+    if (pt > 0) {
+      const change = ((t.total - pt) / pt) * 100;
+      if (change > 0.05) { icon = 'fa-arrow-trend-up'; text = '+' + mrFmt1(change) + '% เทียบเดือนก่อนหน้า'; }
+      else if (change < -0.05) { icon = 'fa-arrow-trend-down'; text = '−' + mrFmt1(Math.abs(change)) + '% เทียบเดือนก่อนหน้า'; }
+      else { icon = 'fa-minus'; text = '0.0% เทียบเดือนก่อนหน้า'; }
+    }
+    const badge = mrEl('mrKpiBadge');
+    badge.title = pt > 0 ? 'เทียบกับ ' + mrLabel(prev) + ' (' + pt + ' งาน)' : '';
+    badge.innerHTML = '';
+    const i = document.createElement('i');
+    i.className = 'fa-solid ' + icon;
+    i.setAttribute('aria-hidden', 'true');
+    const s = document.createElement('span');
+    s.textContent = text;
+    badge.appendChild(i);
+    badge.appendChild(s);
+  }
+
+  function mrFaded(color, idx, list) {
+    return (!mr.category || list[idx] === mr.category) ? color : color + '33';
+  }
+
+  const mrValueLabelPlugin = {
+    id: 'mrValueLabel',
+    afterDatasetsDraw: function (chart) {
+      const ctx = chart.ctx, meta = chart.getDatasetMeta(0);
+      ctx.save();
+      ctx.font = '600 12px Inter, "Noto Sans Thai", sans-serif';
+      ctx.fillStyle = '#334155';
+      ctx.textBaseline = 'middle';
+      meta.data.forEach((bar, i) => ctx.fillText(String(chart.data.datasets[0].data[i]), bar.x + 8, bar.y));
+      ctx.restore();
+    }
+  };
+
+  function mrEnsureCharts() {
+    if (mr.stacked || typeof Chart === 'undefined') return;
+    const a = mrEl('mrStacked'), b = mrEl('mrRank');
+    if (!a || !b) return;
+    Chart.defaults.font.family = '"Noto Sans Thai", Inter, sans-serif';
+    Chart.defaults.color = '#64748B';
+
+    mr.stacked = new Chart(a, {
+      type: 'bar',
+      data: {
+        labels: MR_SHORT,
+        datasets: MR_STATUSES.map(s => ({ label: s.label, data: [], backgroundColor: s.color, borderRadius: 3, borderSkipped: false, maxBarThickness: 56 }))
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        onClick: (evt, els) => { if (els.length) mrSetCategory(MR_CATEGORIES[els[0].index]); },
+        onHover: (evt, els) => { if (evt.native && evt.native.target) evt.native.target.style.cursor = els.length ? 'pointer' : 'default'; },
+        scales: {
+          x: { stacked: true, grid: { display: false }, ticks: { autoSkip: false, maxRotation: 45, minRotation: 0, font: { size: 11 } } },
+          y: { stacked: true, beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#EEF2F6' }, title: { display: true, text: 'จำนวนงาน' } }
+        },
+        plugins: {
+          legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 10, padding: 16 } },
+          tooltip: {
+            callbacks: {
+              title: items => MR_CATEGORIES[items[0].dataIndex],
+              label: item => {
+                let tot = 0;
+                item.chart.data.datasets.forEach(d => { tot += d.data[item.dataIndex]; });
+                return ' ' + item.dataset.label + ': ' + item.parsed.y + ' งาน (' + mrFmt1(mrPct(item.parsed.y, tot)) + '%)';
+              },
+              footer: items => {
+                let tot = 0;
+                items[0].chart.data.datasets.forEach(d => { tot += d.data[items[0].dataIndex]; });
+                return 'รวม ' + tot + ' งาน';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    mr.rank = new Chart(b, {
+      type: 'bar',
+      data: { labels: [], datasets: [{ label: 'จำนวนงานทั้งหมด', data: [], backgroundColor: MR_RANK_COLOR, borderRadius: 4, borderSkipped: false, maxBarThickness: 28 }] },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        layout: { padding: { right: 32 } },
+        onClick: (evt, els) => { if (els.length) mrSetCategory(mr.rankOrder[els[0].index]); },
+        onHover: (evt, els) => { if (evt.native && evt.native.target) evt.native.target.style.cursor = els.length ? 'pointer' : 'default'; },
+        scales: {
+          x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#EEF2F6' } },
+          y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: item => ' ' + item.parsed.x + ' งาน (' + mrFmt1(mrPct(item.parsed.x, mrTotals(mr.month).total)) + '% ของงานทั้งหมด)'
+            }
+          }
+        }
+      },
+      plugins: [mrValueLabelPlugin]
+    });
+  }
+
+  function mrRenderCharts() {
+    mrEnsureCharts();
+    if (!mr.stacked || !mr.rank) return;
+    MR_STATUSES.forEach((s, i) => {
+      const ds = mr.stacked.data.datasets[i];
+      ds.data = MR_CATEGORIES.map(c => (mr.data[mr.month] && mr.data[mr.month][c] ? mr.data[mr.month][c][s.key] : 0));
+      ds.backgroundColor = MR_CATEGORIES.map((c, idx) => mrFaded(s.color, idx, MR_CATEGORIES));
+    });
+    mr.stacked.update();
+
+    const list = MR_CATEGORIES.map((c, i) => ({ c: c, i: i, t: mrTotals(mr.month, c).total }))
+      .sort((a, b) => b.t - a.t || a.i - b.i);
+    mr.rankOrder = list.map(x => x.c);
+    mr.rank.data.labels = mr.rankOrder;
+    mr.rank.data.datasets[0].data = list.map(x => x.t);
+    mr.rank.data.datasets[0].backgroundColor = mr.rankOrder.map((c, idx) => mrFaded(MR_RANK_COLOR, idx, mr.rankOrder));
+    mr.rank.update();
+  }
+
+  function mrRateCell(rate) {
+    return '<div class="mr-rate"><div class="bar"><span style="width:' + rate + '%"></span></div><span class="val">' + mrFmt1(rate) + '%</span></div>';
+  }
+
+  function mrRenderTable() {
+    mrEl('mrTableMonth').textContent = 'ข้อมูลประจำ' + mrLabel(mr.month);
+    let html = '';
+    MR_CATEGORIES.forEach(c => {
+      const t = mrTotals(mr.month, c);
+      const cls = mr.category === c ? 'sel' : (mr.category ? 'dim' : '');
+      html += '<tr class="' + cls + '"><th scope="row">' + c + '</th>' +
+        '<td>' + t.done + '</td><td>' + t.pending + '</td><td>' + t.failed + '</td>' +
+        '<td class="sum">' + t.total + '</td><td class="rate">' + mrRateCell(mrPct(t.done, t.total)) + '</td></tr>';
+    });
+    const all = mrTotals(mr.month);
+    html += '<tr class="total"><th scope="row">รวมทั้งหมด</th>' +
+      '<td>' + all.done + '</td><td>' + all.pending + '</td><td>' + all.failed + '</td>' +
+      '<td class="sum">' + all.total + '</td><td class="rate">' + mrRateCell(mrPct(all.done, all.total)) + '</td></tr>';
+    mrEl('mrMatrixBody').innerHTML = html;
+  }
+
+  function mrRender() {
+    mrRenderControls();
+    mrRenderKpis();
+    mrRenderCharts();
+    mrRenderTable();
+  }
+
+  // เรียกจาก renderAdminTable() ทุกครั้งที่ข้อมูลหรือตัวกรองในตารางเจ้าหน้าที่เปลี่ยน
+  function updatePublicDashboard(jobsData) {
+    mr.data = mrBuildData(jobsData);
+    const cur = mrNowKey();
+    if (!mr.data[cur]) mr.data[cur] = mrEmptyMonth(); // เดือนปัจจุบันแสดงได้เสมอ แม้ยังไม่มีงาน
+    if (!mr.month || !mr.data[mr.month]) mr.month = cur;
+    mrWire();
+    mrRender();
   }
 
   // ==========================================
